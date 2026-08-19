@@ -15,7 +15,20 @@
   background-image: url("/images/bg.png");
   background-size: auto 100vh;
   background-color: var(--color-brand);
-  background-position: top center;
+  /* Below xl the monogram baked into the image sits much closer to
+     .heroContent than to the header above it (measured on a 390x844
+     viewport: ~151px header-to-monogram vs. ~38px monogram-to-content —
+     a visibly lopsided 4:1 split). Nudging the image up with a vertical
+     offset — background-color fills whatever red sliver this leaves
+     exposed at the bottom, same trick as the xl background-size comment
+     below — splits that slack evenly instead. Solving
+     "0.2639vh - offset - headerHeight = contentTop - (0.7454vh - offset)"
+     (0.2639/0.7454 being the monogram's own top/bottom as a fraction of
+     the image, contentTop ~0.79vh from the grid row + row-gap below, and
+     headerHeight fixed at 72px under 767px) for the offset that makes
+     both sides equal lands on this calc — exact at a 844px-tall viewport,
+     within a few px elsewhere in the phone/tablet range this rule covers. */
+  background-position: center calc(36px - 10.965vh);
   background-repeat: no-repeat;
   display: grid;
   grid-template-columns: minmax(0, 1fr);

@@ -17,37 +17,12 @@ type TypingHeadingProps = {
   charDelayMs?: number;
   /** Delay before the first character appears. */
   startDelayMs?: number;
-  /** Key gating the animation to a single play per key, tracked in
-      `playedKeys` below rather than sessionStorage — later mounts within
-      the same page load (e.g. navigating to another route and back via
-      next/link) show the finished text immediately instead of retyping
-      it, but a real browser reload re-evaluates this module and clears
-      the flag, so the animation plays again. sessionStorage would survive
-      that reload too, which is what previously made the heading look
-      "stuck" showing finished text with no typing on every refresh. */
   playOnceKey?: string;
 };
 
-// Module-scoped rather than component state so it survives remounts
-// (route away and back) without persisting across an actual page
-// reload — see the playOnceKey doc above.
 const playedKeys = new Set<string>();
 
-/**
- * Reveals `segments` one character at a time, then leaves a blinking caret
- * at the end — a typewriter effect.
- *
- * Driven by requestAnimationFrame rather than a CSS animation-delay per
- * character: browsers throttle/pause CSS animation timelines on elements
- * once they're scrolled out of the viewport, and don't reliably resume
- * them on returning, which left this heading permanently stuck mid-word
- * after a scroll away and back. rAF callbacks aren't subject to that
- * per-element throttling, only to the tab itself being backgrounded.
- *
- * The animated markup is decorative (aria-hidden); a plain,
- * visually-hidden copy of the full text carries the accessible name so
- * screen readers get it immediately instead of mid-animation.
- */
+
 export default function TypingHeading({
   segments,
   charDelayMs = 32,
