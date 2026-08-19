@@ -1,69 +1,88 @@
-import Image from "next/image";
+import Button from "@/components/Button";
+import PartnersCarousel from "@/components/PartnersCarousel";
+import Projects from "@/components/Projects";
+import ScrollToTop from "@/components/ScrollToTop";
+import TypingHeading from "@/components/TypingHeading";
 import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <ScrollToTop />
+
+      {/* data-scroll-snap flags this as the home page for the html:has()
+          rule in globals.css that turns on full-viewport scroll-snap —
+          keeps that behavior off the About/Services/Connect pages without
+          any route-detection JS. */}
+      <section className={styles.hero} aria-label="Joane Camille" data-scroll-snap="home">
+        {/* <a href="#projects" className={styles.heroProjects}>
+          <span>Projects</span>
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 14 14"
+            fill="none"
+            aria-hidden="true"
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+            <path
+              d="M2 5L7 10L12 5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </svg>
+        </a> */}
+
+        <div className={styles.heroContent}>
+          <p className={styles.heroEyebrow}>Strategy &middot; Design &middot; Digital Growth</p>
+          <h1 className={styles.heroHeading}>
+            <TypingHeading
+              segments={[
+                { text: "Building brands that " },
+                { text: "move markets", className: styles.heroChrome },
+                { text: ", not just pixels." },
+              ]}
+            />
+          </h1>
+          <p className={styles.heroSubheading}>
+            I turn your ideas into fully developed websites. Handling everything from the visual
+            direction to the final build.
+          </p>
+          <div className={styles.heroCta}>
+            <Button
+              href="https://calendly.com/joane-camille/30min"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="invert"
+              className={styles.heroCtaButton}
+            >
+              <span>Start Your Project</span>
+              <svg
+                className={styles.heroCtaArrow}
+                width="14"
+                height="14"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 10H16M16 10L11 5M16 10L11 15"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Button>
+          </div>
+          <div className={styles.heroPartners}>
+            <PartnersCarousel />
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <Projects />
+    </>
   );
 }

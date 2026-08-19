@@ -1,0 +1,333 @@
+.header {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 100;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+/* Groups the logo with the primary nav so both sit together on the
+   right — the toggle button (mobile) is the only other item in .bar. */
+.brandNav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-24);
+}
+
+/* Logo — right side, next to the nav, links to home. Matches .navLink's
+   font-size and letter-spacing (.navLink sets neither, so none here
+   either) so the wordmark reads at the same scale as the menu beside it. */
+.logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-small);
+  color: var(--color-secondary);
+  /* opacity: 0.5; */
+  transition: color 0.2s var(--ease-out), opacity 0.2s var(--ease-out);
+}
+
+.logo:hover {
+  color: var(--color-primary);
+}
+
+/* Primary nav — top-right, desktop */
+.nav {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .nav {
+    display: block;
+  }
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.navLink {
+  position: relative;
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--color-neutral-700);
+  padding-block: var(--space-2);
+  transition: color 0.2s var(--ease-out);
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -2px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: right 0.25s var(--ease-out);
+}
+
+.navLink:hover {
+  color: var(--color-secondary);
+}
+
+.navLink:hover::after,
+.navLink[data-active]::after {
+  right: 0;
+}
+
+.navLink[data-active] {
+  color: var(--color-secondary);
+}
+
+/* Mobile menu toggle button — top-right on small screens */
+.menuToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+}
+
+@media (min-width: 900px) {
+  .menuToggle {
+    display: none;
+  }
+}
+
+/* Light variant — used on the transparent home header, over the hero image */
+.menuToggleLight:hover {
+  opacity: 0.7;
+}
+
+/* Black chrome dot — same polished dark-metal sphere used as the bullet in
+   the hero eyebrow (see .heroEyebrow::before in page.module.css), reused
+   here so the mobile menu toggle reads as the same design language. The
+   gradient carries its own contrast, so no separate light/dark variant is
+   needed across the transparent home header and the solid interior one. */
+.menuIcon {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  border-radius: var(--radius-full);
+  background: radial-gradient(
+    circle at 30% 30%,
+    #ffffff 0%,
+    #9a9a9e 22%,
+    #3a3a3e 50%,
+    #0a0a0c 100%
+  );
+  transition: transform 0.25s var(--ease-out);
+  margin-left: 16px;
+}
+
+.menuIcon[data-open] {
+  transform: scale(1.15);
+}
+
+/* Mobile nav overlay */
+.mobileNav {
+  position: fixed;
+  inset-block-start: var(--header-height);
+  inset-inline: 0;
+  bottom: 0;
+  background: var(--color-neutral-0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-out), visibility 0.25s;
+}
+
+.mobileNav[data-open] {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media (min-width: 900px) {
+  .mobileNav {
+    display: none;
+  }
+}
+
+.mobileNavList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.mobileNavItem {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.mobileNav[data-open] .mobileNavItem {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobileNavLink {
+  font-family: var(--font-display);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+}
+
+.mobileNavLink[data-active] {
+  color: var(--color-primary);
+}
+
+/* ==========================================================================
+   Home page header — transparent overlay on top of the hero background,
+   logo and vertical nav grouped together top-right (no scroll/mobile-menu
+   behavior; the stack is compact enough to hold at every width).
+   ========================================================================== */
+.homeHeader {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 100;
+  padding-block: var(--space-6);
+  padding-inline: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .homeHeader {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (min-width: 768px) {
+  .homeHeader {
+    padding-inline: var(--space-8);
+  }
+}
+
+.homeBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: var(--space-4);
+}
+
+/* Only the nav actually flows through here now — .homeLogo is pulled out
+   via position: absolute below, so this wrapper just hands it off to
+   .homeHeader (its nearest positioned ancestor) without affecting the
+   nav's own right-aligned layout. */
+.homeBrandNav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-24);
+}
+
+/* Below the desktop breakpoint the vertical nav collapses into the same
+   toggle + full-screen overlay used on interior pages, so give the bar the
+   same fixed height and centered alignment as the toggle button needs. */
+@media (max-width: 899px) {
+  .homeHeader {
+    height: var(--header-height);
+    padding-block: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .homeBar {
+    align-items: center;
+    width: 100%;
+  }
+}
+
+/* Matches .homeNavLink's font-size and letter-spacing so the wordmark
+   reads at the same scale as the menu beside it. Pulled out of the
+   .homeBrandNav flex flow and centered on .homeHeader (full viewport
+   width, its nearest positioned ancestor) so it lines up with the
+   monogram baked into the hero background, which is itself
+   horizontally centered at every breakpoint — see the background-position
+   comments on .hero in page.module.css. Staying fixed with the rest of
+   the header means it keeps that same on-screen spot even once the
+   monogram has scrolled out of view. */
+.homeLogo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-caption);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: var(--color-neutral-0);
+  transition: color 0.2s var(--ease-out), opacity 0.2s var(--ease-out);
+  /* opacity: 0.8; */
+}
+
+/* Switched on by Header.tsx once the hero has scrolled fully out of view —
+   i.e. the transparent header is now sitting over the dark-red Projects
+   deck instead of the hero photo. */
+.homeHeader[data-over-projects] .homeLogo {
+  color: var(--color-brand);
+}
+
+.homeLogo:hover {
+  opacity: 0.6;
+}
+
+.homeNav {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .homeNav {
+    display: block;
+  }
+}
+
+.homeNavList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.homeNavLink {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-caption);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  text-align: left;
+  color: var(--color-neutral-0);
+  transition: color 0.2s var(--ease-out), opacity 0.2s var(--ease-out);
+}
+
+.homeNavLink:hover {
+  opacity: 0.7;
+}
+
+.homeHeader[data-over-projects] .homeNavLink {
+  color: var(--color-brand);
+}

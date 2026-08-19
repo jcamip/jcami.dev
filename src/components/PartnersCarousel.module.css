@@ -1,0 +1,86 @@
+/* Lives inside .heroContent (see page.module.css) — no background of its
+   own, so the hero's own image shows through. Not interactive: no
+   controls, links, or buttons, just a passive, auto-scrolling strip. */
+
+/* ==========================================================================
+   4. LAYOUT
+   ========================================================================== */
+.partners {
+  /* vh-clamped below xl so the strip shrinks on short phones instead of
+     crowding the heading against the hero's logo mark above it — see the
+     matching comment on .heroContent in page.module.css. */
+  --logo-h: clamp(44px, 8vh, 92px);
+  margin-top: clamp(var(--space-0), 0.5vh, var(--space-3));
+}
+
+/* ==========================================================================
+   5. COMPONENTS
+   ========================================================================== */
+.marquee {
+  overflow: hidden;
+  /* Fade the strip's edges so it entering/leaving reads as a continuous
+     loop rather than popping in and out. */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black var(--space-6),
+    black calc(100% - var(--space-6)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black var(--space-6),
+    black calc(100% - var(--space-6)),
+    transparent
+  );
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: max-content;
+
+  /* Track is double-width (two copies of the strip); animating to -50%
+     shifts by exactly one copy's width, so the strip keeps entering from
+     the right as it scrolls left. */
+  animation: partnersScroll 28s linear infinite;
+}
+
+.strip {
+  height: var(--logo-h);
+  width: auto;
+  flex-shrink: 0;
+}
+
+@keyframes partnersScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE / MEDIA QUERIES
+   ========================================================================== */
+@media (min-width: 768px) {
+  .partners {
+    --logo-h: 96px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .partners {
+    --logo-h: 84px;
+    margin-top: var(--space-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

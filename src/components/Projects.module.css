@@ -1,0 +1,93 @@
+/* Projects — full-bleed dark-red section, one full-viewport, edge-to-edge
+   image per project. Sits directly after the hero in normal flow (no
+   negative margin needed; unlike the hero it isn't the first child pulling
+   itself up under the fixed header). The fixed home header stays visible on
+   top since it has no background of its own — see Header.module.css
+   .homeHeader. */
+.projects {
+  background: var(--color-projects-bg);
+  color: var(--color-neutral-0);
+}
+
+.project {
+  position: relative;
+  min-height: 100vh;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  /* Snap stop for the home-page scroll-snap set up in globals.css
+     (html:has([data-scroll-snap="home"])) — each project lands full-screen
+     instead of scrolling to rest half in one section, half in the next. */
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.project:first-child {
+  border-top: none;
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+}
+
+.image {
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   Hidden for now — index/title/description/"View project" link. Not
+   rendered in Projects.tsx while the section is image-only; kept here so
+   restoring the copy overlay is a quick uncomment away rather than a
+   rebuild.
+   ========================================================================== */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  max-width: 480px;
+}
+
+.index {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Font-family/weight/letter-spacing already match .heroHeading via the
+   global h3 rule (globals.css) — font-size and color are pinned here to
+   heroHeading's own values (clamp scale + translucent white) so the
+   heading voice stays consistent between the hero and this section. */
+.title {
+  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.description {
+  font-size: var(--text-body-lg);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-small);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-neutral-0);
+  margin-top: var(--space-2);
+  transition: color 0.2s var(--ease-out), gap 0.2s var(--ease-out);
+}
+
+.link:hover {
+  color: var(--color-accent);
+  gap: var(--space-3);
+}
+
+.link svg {
+  flex-shrink: 0;
+}

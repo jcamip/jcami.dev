@@ -1,150 +1,259 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
+/* Hero — full-bleed background, one full viewport per screen. Pulled up by
+   the header height so the image runs edge-to-edge underneath the
+   transparent home header instead of stopping below it.
 
-  --text-primary: #000;
-  --text-secondary: #666;
+   Mobile-first: below xl the logo and copy can't sit side by side without
+   colliding (the logo's rendered size scales with viewport height, so at
+   laptop widths it still eats into the right column), so the logo is
+   pinned to the top of the frame and the copy settles centered near the
+   bottom. From xl up there's enough width for the copy to sit beside the
+   logo, anchored to the left edge and centered on the viewport height. */
+.hero {
+  position: relative;
+  margin-top: calc(-1 * var(--header-height));
+  min-height: 100vh;
+  background-image: url("/images/bg.png");
+  background-size: auto 100vh;
+  background-color: var(--color-brand);
+  background-position: top center;
+  background-repeat: no-repeat;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(76vh, 1fr) auto;
+  row-gap: clamp(var(--space-4), 3vh, var(--space-8));
+  justify-items: center;
+  padding-inline: var(--space-6);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
 
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
+.hero::before {
+  content: "";
+}
 
+@media (min-width: 768px) {
+  .hero {
+    padding-inline: var(--space-8);
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero {
+    /* From xl the copy sits beside the logo, vertically centered, so the
+       reserved-row trick above no longer applies — back to plain flex. */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* Shrunk below "cover" and pinned to the top so the monogram baked
+       into bg.png sits higher in the frame, closing the gap up to the
+       "JOANE CAMILLE" wordmark (fixed near the header, independent of
+       viewport height) until it matches the gap down to the partner strip
+       below. Measured on the rendered page: the wordmark's bottom edge
+       sits ~53px from the top at any viewport height, the monogram spans
+       26.39%-74.54% of the image's own height, and the partner strip's
+       center sits at 93% of the hero — solving for the scale that
+       equalizes both gaps lands on ~93% of the image's natural height,
+       and stays within ~2px of exact from a 13" laptop to a 27" monitor,
+       so no extra breakpoint is needed. background-color (identical to
+       the image's own red — see --color-brand) backs whatever this
+       shrink leaves uncovered: the strip at the bottom here, and the
+       sides too on an ultra-wide display, so it reads as more of the
+       same red rather than a seam. */
+    background-position: top center;
+    background-size: auto 93vh;
+  }
+
+  .hero::before {
+    display: none;
+  }
+}
+
+.heroContent {
+  max-width: 560px;
+  width: 100%;
+  /* Top padding is intentionally 0 below xl: with the reserved-row grid
+     above, .heroContent is laid out top-down from a fixed start, so any
+     top padding would just eat into the row-1 reservation without adding
+     visible space (the gap above is already guaranteed by that row).
+     Bottom padding scales down with viewport height so short phones don't
+     lose the partner strip off the bottom of the first screen. */
+  padding-top: 0;
+  padding-bottom: clamp(var(--space-2), 2vh, var(--space-6));
+  text-align: center;
+}
+
+@media (min-width: 1280px) {
+  .heroContent {
+    max-width: 420px;
+    padding-block: var(--space-12);
+    /* A small nudge down off dead-center (see the margin-box centering
+       note above) — just enough to keep it off exact center without
+       drifting far from the monogram's own vertical middle. */
+    margin-bottom: var(--space-6);
+    margin-top: var(--space-0);
+    /* Nudge right off the flush left edge and in toward the monogram —
+       more than a hairline so it reads as a deliberate offset rather than
+       barely-off-edge, but pulled back in from the wider inset this used
+       to carry so the (now larger) heading sits closer to the left edge. */
+    margin-left: var(--space-18);
+    text-align: left;
+  }
+}
+
+/* Sits between the heading and the partner strip, so it takes the same
+   vh-clamped rhythm as the eyebrow/content spacing above it. Centered
+   below xl (matching .heroContent's centered text), left-aligned from xl
+   where the copy itself goes left-aligned. */
+.heroCta {
   display: flex;
-  flex: 1;
-  flex-direction: column;
+  justify-content: center;
+  margin-top: clamp(var(--space-2), 2vh, var(--space-4));
+  margin-bottom: clamp(var(--space-4), 3vh, var(--space-6));
+}
+
+@media (min-width: 1280px) {
+  .heroCta {
+    justify-content: flex-start;
+  }
+}
+
+/* Nudges the arrow forward on hover/focus — a small motion cue on top of
+   the shared .btn lift, echoing the same intent as .heroProjects' hover
+   opacity dip just without reusing its exact treatment. */
+.heroCtaArrow {
+  transition: transform 0.2s var(--ease-out);
+}
+
+.heroCtaButton:hover .heroCtaArrow,
+.heroCtaButton:focus-visible .heroCtaArrow {
+  transform: translateX(4px);
+}
+
+
+@media (min-width: 1280px) {
+  .heroPartners {
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    top: 93%;
+    transform: translateY(-50%);
+    opacity: 0.6;
+  }
+}
+
+.heroProjects {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .heroProjects {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-2);
+    position: absolute;
+    /* Bottom-left corner of the hero frame (absolute positioning resolves
+       against the padding box's outer edge, ignoring .hero's own
+       padding-inline/block, so both insets are added back explicitly). */
+    left: calc(var(--space-8) + var(--space-1));
+    bottom: var(--space-8);
+    /* Same small-caps label recipe as .heroEyebrow, for a consistent
+       typographic voice throughout the hero. */
+    font-family: var(--font-body);
+    font-size: var(--text-caption);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ffffff;
+    transition: opacity 0.2s var(--ease-out);
+  }
+
+  /* Jumps to #projects (see Projects.tsx) — same hover recipe as the other
+     clickable hero elements (.homeLogo, .homeNavLink in Header.module.css). */
+  .heroProjects:hover {
+    opacity: 0.7;
+  }
+}
+
+.heroEyebrow {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  /* Same vh-clamped reasoning as .heroContent's padding above. */
+  margin-bottom: clamp(var(--space-2), 2vh, var(--space-4));
 }
 
-.main {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
-}
-
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
-
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
-}
-
-.ctas a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
-}
-
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
-}
-
-a.secondary {
-  border-color: var(--button-secondary-border);
-}
-
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
+@media (min-width: 1280px) {
+  .heroEyebrow {
+    justify-content: flex-start;
   }
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
+.heroEyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  /*— a bright highlight top-left falling off to near-black
+     reads as a small polished dark-metal sphere rather than a flat tint. */
+  background: radial-gradient(
+    circle at 30% 30%,
+    #ffffff 0%,
+    #9a9a9e 22%,
+    #3a3a3e 50%,
+    #0a0a0c 100%
+  );
+  flex-shrink: 0;
+}
 
-  .intro {
-    gap: 16px;
-  }
+.heroHeading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* Smaller than --text-display below xl: at phone/tablet widths this
+     heading sits under the logo mark instead of beside it (see the .hero
+     comment above), so it needs to stay short enough that it — plus the
+     eyebrow and partner strip below it — clears the logo and still leaves
+     the partner strip on-screen without scrolling. */
+  font-size: clamp(1.5rem, 4.4vh, 3rem);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
 
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
+@media (min-width: 1280px) {
+  .heroHeading {
+    /* Sized to the narrow 420px .heroContent column at this breakpoint —
+       any bigger and "that" (before the unbreakable "move markets" span)
+       gets orphaned alone on its own line instead of joining the line
+       above it. */
+    font-size: clamp(2.5rem, 2.9vw, 2.75rem);
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
+/* Supporting line under the headline — body font/weight so it reads as
+   secondary to the display heading, and a step down in color (rather
+   than pure white) to keep that hierarchy without dropping legibility
+   against the dark photo. */
+.heroSubheading {
+  margin-top: clamp(var(--space-2), 2vh, var(--space-4));
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+  line-height: var(--leading-snug);
+  color: var(--color-neutral-200);
 }
 
-.code {
-  font-family: var(--font-geist-mono);
-  font-size: 0.9em;
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  padding: 0.1em 0.4em;
-  border-radius: 6px;
+/* Solid black fill for the emphasized phrase, standing out against the
+   solid white of the surrounding heading. nowrap keeps "move markets"
+   from breaking between the two words at narrow widths — the phrase
+   wraps to the next line as a whole instead of splitting mid-phrase. */
+.heroChrome {
+  white-space: nowrap;
+  color: #000000;
 }

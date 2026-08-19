@@ -1,0 +1,27 @@
+/* Blinking caret. TypingHeading.tsx toggles .cursorOn once the last
+   character has been typed; opacity is the only property animated (see
+   performance habits: transform/opacity only). */
+.cursor {
+  display: inline-block;
+  width: 0.07em;
+  height: 0.85em;
+  margin-left: 0.05em;
+  background: currentColor;
+  vertical-align: -0.05em;
+  opacity: 0;
+}
+
+.cursorOn {
+  animation: blink 1s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}

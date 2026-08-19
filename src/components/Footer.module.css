@@ -1,0 +1,78 @@
+.footer {
+  background: var(--color-secondary);
+  color: var(--color-neutral-0);
+}
+
+.inner {
+  padding-block: var(--space-16);
+}
+
+.top {
+  display: grid;
+  gap: var(--space-12);
+}
+
+@media (min-width: 768px) {
+  .top {
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: var(--space-8);
+  }
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-small);
+  letter-spacing: 0.14em;
+  color: var(--color-neutral-0);
+  width: fit-content;
+}
+
+.tagline {
+  color: var(--color-neutral-300);
+  max-width: 32ch;
+}
+
+.footerNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.navHeading {
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+}
+
+.footerNav ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footerNav a {
+  color: var(--color-neutral-200);
+  font-size: var(--text-small);
+  transition: color 0.2s var(--ease-out);
+}
+
+.footerNav a:hover {
+  color: var(--color-accent);
+}
+
+.bottom {
+  margin-top: var(--space-16);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-neutral-700);
+  color: var(--color-neutral-500);
+  font-size: var(--text-caption);
+}
