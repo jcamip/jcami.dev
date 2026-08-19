@@ -8,7 +8,7 @@ import styles from "./PartnersCarousel.module.css";
 // hero's own dark-red background without needing a background of its
 // own — same as the rest of the hero.
 const PARTNERS_STRIP = {
-  src: "/partners/partners.png",
+  src: "/partners/prtn.png",
   alt:
     "Partner and collaborator logos: Investopia, Mubadala, 1 Billion Followers Summit, GMIS, F1 Abu Dhabi Grand Prix, Make It in the Emirates, Misk Foundation, Ministry of Investment, Solaax, TEDx, SEC, SRTIP",
   width: 5304,

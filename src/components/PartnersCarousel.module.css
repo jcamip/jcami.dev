@@ -9,7 +9,7 @@
   /* vh-clamped below xl so the strip shrinks on short phones instead of
      crowding the heading against the hero's logo mark above it — see the
      matching comment on .heroContent in page.module.css. */
-  --logo-h: clamp(44px, 8vh, 92px);
+  --logo-h: clamp(36px, 6.5vh, 74px);
   margin-top: clamp(var(--space-0), 0.5vh, var(--space-3));
 }
 
@@ -68,13 +68,13 @@
    ========================================================================== */
 @media (min-width: 768px) {
   .partners {
-    --logo-h: 96px;
+    --logo-h: 78px;
   }
 }
 
 @media (min-width: 1280px) {
   .partners {
-    --logo-h: 84px;
+    --logo-h: 68px;
     margin-top: var(--space-1);
   }
 }

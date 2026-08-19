@@ -86,24 +86,13 @@
   .heroContent {
     max-width: 420px;
     padding-block: var(--space-12);
-    /* A small nudge down off dead-center (see the margin-box centering
-       note above) — just enough to keep it off exact center without
-       drifting far from the monogram's own vertical middle. */
     margin-bottom: var(--space-6);
     margin-top: var(--space-0);
-    /* Nudge right off the flush left edge and in toward the monogram —
-       more than a hairline so it reads as a deliberate offset rather than
-       barely-off-edge, but pulled back in from the wider inset this used
-       to carry so the (now larger) heading sits closer to the left edge. */
     margin-left: var(--space-18);
     text-align: left;
   }
 }
 
-/* Sits between the heading and the partner strip, so it takes the same
-   vh-clamped rhythm as the eyebrow/content spacing above it. Centered
-   below xl (matching .heroContent's centered text), left-aligned from xl
-   where the copy itself goes left-aligned. */
 .heroCta {
   display: flex;
   justify-content: center;
@@ -117,9 +106,6 @@
   }
 }
 
-/* Nudges the arrow forward on hover/focus — a small motion cue on top of
-   the shared .btn lift, echoing the same intent as .heroProjects' hover
-   opacity dip just without reusing its exact treatment. */
 .heroCtaArrow {
   transition: transform 0.2s var(--ease-out);
 }
@@ -137,7 +123,7 @@
     right: 2%;
     top: 93%;
     transform: translateY(-50%);
-    opacity: 0.6;
+    opacity: 0.7;
   }
 }
 
