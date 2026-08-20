@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import ClosingCta from "@/components/ClosingCta";
 import PartnersCarousel from "@/components/PartnersCarousel";
 import Projects from "@/components/Projects";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -14,7 +15,12 @@ export default function Home() {
           rule in globals.css that turns on full-viewport scroll-snap —
           keeps that behavior off the About/Services/Connect pages without
           any route-detection JS. */}
-      <section className={styles.hero} aria-label="Joane Camille" data-scroll-snap="home">
+      <section
+        className={styles.hero}
+        aria-label="Joane Camille"
+        data-scroll-snap="home"
+        data-header-dark
+      >
         {/* <a href="#projects" className={styles.heroProjects}>
           <span>Projects</span>
           <svg
@@ -47,7 +53,7 @@ export default function Home() {
           </h1>
           <p className={styles.heroSubheading}>
             I turn your ideas into fully developed websites. Handling everything from the visual
-            direction to the final build.
+            direction to launch. <br/>Scroll to explore selected projects.
           </p>
           <div className={styles.heroCta}>
             <Button
@@ -83,6 +89,7 @@ export default function Home() {
       </section>
 
       <Projects />
+      <ClosingCta />
     </>
   );
 }

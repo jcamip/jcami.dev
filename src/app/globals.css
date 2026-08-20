@@ -292,6 +292,30 @@ main {
   box-shadow: var(--shadow-md);
 }
 
+/* Solid counterpart to .btnInvert for light backgrounds (e.g. ClosingCta,
+   the closing screen of the home page's scroll-snap sequence) — same
+   square-cornered, uppercase, letter-spaced voice as the hero's own CTA,
+   just filled with the brand red since there's no photo behind it to read
+   through. Hover swaps to the same fill/outline inversion .btnInvert
+   itself does on hover, so the home page's two CTA moments read as a
+   matched pair rather than two unrelated button styles. */
+.btnBrand {
+  background: var(--color-brand);
+  color: var(--color-neutral-0);
+  border-color: var(--color-brand);
+  border-radius: var(--radius-none);
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.btnBrand:hover {
+  background: var(--color-neutral-0);
+  color: var(--color-brand);
+  box-shadow: var(--shadow-md);
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;

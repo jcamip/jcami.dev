@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-type Variant = "primary" | "accent" | "ghost" | "invert";
+type Variant = "primary" | "accent" | "ghost" | "invert" | "brand";
 
 type CommonProps = {
   variant?: Variant;
@@ -27,6 +27,7 @@ const VARIANT_CLASS: Record<Variant, string> = {
   accent: "btnAccent",
   ghost: "btnGhost",
   invert: "btnInvert",
+  brand: "btnBrand",
 };
 
 export default function Button({

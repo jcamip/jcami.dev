@@ -46,7 +46,7 @@ const PROCESS = [
 export default function ServicesPage() {
   return (
     <>
-      <section className={styles.hero}>
+      <section className={styles.hero} data-header-dark>
         <div className={`container ${styles.heroInner}`}>
           <span className="eyebrow">Services</span>
           <h1>Full-scope support, from strategy to launch.</h1>
@@ -80,7 +80,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className={`section ${styles.process}`}>
+      <section className={`section ${styles.process}`} data-header-dark>
         <div className="container">
           <SectionHeading
             eyebrow="Process"

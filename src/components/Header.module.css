@@ -21,7 +21,11 @@
 }
 
 /* Groups the logo with the primary nav so both sit together on the
-   right — the toggle button (mobile) is the only other item in .bar. */
+   right — the toggle button (mobile) is the only other item in .bar.
+   Only ever rendered for pages outside OVERLAY_LAYOUT_PATHS in
+   Header.tsx — currently none, since every existing route uses the
+   overlay layout below, but kept as the plain solid-header fallback for
+   whatever page doesn't want it. */
 .brandNav {
   display: flex;
   align-items: center;
@@ -198,9 +202,20 @@
 }
 
 /* ==========================================================================
-   Home page header — transparent overlay on top of the hero background,
-   logo and vertical nav grouped together top-right (no scroll/mobile-menu
-   behavior; the stack is compact enough to hold at every width).
+   Overlay header — fixed position, centered logo, vertical nav grouped
+   top-right; collapses to the same hamburger + full-screen overlay as the
+   plain header below 900px. Used by Header.tsx for every page whose hero
+   allows it (see OVERLAY_LAYOUT_PATHS) — originally home-only, since the
+   stack is compact enough to hold at every width regardless of what's
+   behind it.
+
+   Two tones share this layout:
+   - Transparent (default): white logo/nav floating over a full-bleed dark
+     hero, switching to brand red once a light section is behind it
+     instead — see [data-over-light] below. Home, About, Services.
+   - Solid (.homeHeaderSolid): opaque backdrop + permanently dark text,
+     for pages whose hero isn't uniformly dark behind where the nav sits
+     (Connect's right-hand form panel is light) — no scroll switch needed.
    ========================================================================== */
 .homeHeader {
   position: fixed;
@@ -209,6 +224,23 @@
   z-index: 100;
   padding-block: var(--space-6);
   padding-inline: var(--space-4);
+}
+
+/* Solid tone — same chrome as the plain .header (translucent white,
+   blurred, bottom border) so the overlay layout stays legible without a
+   dark backdrop behind it. .homeLogo/.homeNavLink default to white for
+   the transparent tone, so both need the dark override here; the hover
+   opacity rules on each already apply regardless of color. */
+.homeHeaderSolid {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.homeHeaderSolid .homeLogo,
+.homeHeaderSolid .homeNavLink {
+  color: var(--color-secondary);
 }
 
 @media (min-width: 640px) {
@@ -260,12 +292,13 @@
 /* Matches .homeNavLink's font-size and letter-spacing so the wordmark
    reads at the same scale as the menu beside it. Pulled out of the
    .homeBrandNav flex flow and centered on .homeHeader (full viewport
-   width, its nearest positioned ancestor) so it lines up with the
-   monogram baked into the hero background, which is itself
-   horizontally centered at every breakpoint — see the background-position
-   comments on .hero in page.module.css. Staying fixed with the rest of
-   the header means it keeps that same on-screen spot even once the
-   monogram has scrolled out of view. */
+   width, its nearest positioned ancestor) — on the home page that also
+   lines it up with the monogram baked into the hero background, itself
+   horizontally centered at every breakpoint (see the background-position
+   comments on .hero in page.module.css); on every other overlay page it
+   just centers the wordmark at the top of the viewport. Staying fixed
+   with the rest of the header means it keeps that same on-screen spot
+   regardless of scroll position. */
 .homeLogo {
   position: absolute;
   top: 50%;
@@ -283,10 +316,12 @@
   /* opacity: 0.8; */
 }
 
-/* Switched on by Header.tsx once the hero has scrolled fully out of view —
-   i.e. the transparent header is now sitting over the dark-red Projects
-   deck instead of the hero photo. */
-.homeHeader[data-over-projects] .homeLogo {
+/* Switched on by Header.tsx once none of the current page's marked dark
+   sections ([data-header-dark]) are behind the header any more — i.e. a
+   light section has taken the dark hero's place. Doesn't apply to
+   .homeHeaderSolid, which never sets [data-over-light] in the first
+   place (see TRANSPARENT_OVER_DARK_HERO_PATHS in Header.tsx). */
+.homeHeader[data-over-light] .homeLogo {
   color: var(--color-brand);
 }
 
@@ -307,27 +342,60 @@
 .homeNavList {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 0;
 }
 
+/* display: flex rather than block + text-align: right, so the active dot
+   (::before below) sits inline before the label instead of needing
+   absolute positioning — justify-content keeps the label flush right
+   with or without the dot present. */
 .homeNavLink {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-caption);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   line-height: 1.5;
-  text-align: left;
   color: var(--color-neutral-0);
   transition: color 0.2s var(--ease-out), opacity 0.2s var(--ease-out);
+}
+
+/* Current-page marker — the same polished-metal chrome dot as the mobile
+   .menuIcon (and .heroEyebrow::before in page.module.css), just scaled
+   down to sit comfortably next to this caption-sized label instead of
+   standing alone. Only rendered for the active link (::before doesn't
+   exist at all on the others), so it never affects their layout.
+   align-items: center on .homeNavLink centers it against the *line box*,
+   but all-caps text has no descenders to fill the space that box still
+   reserves for them — so the letters themselves sit visually higher than
+   that box's true center, leaving the line-box-centered dot reading a
+   touch low next to them. The margin-top nudges it back up to the caps'
+   actual optical center instead. */
+.homeNavLink[data-active]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  margin-top: -1px;
+  border-radius: var(--radius-full);
+  background: radial-gradient(
+    circle at 30% 30%,
+    #ffffff 0%,
+    #9a9a9e 22%,
+    #3a3a3e 50%,
+    #0a0a0c 100%
+  );
 }
 
 .homeNavLink:hover {
   opacity: 0.7;
 }
 
-.homeHeader[data-over-projects] .homeNavLink {
+.homeHeader[data-over-light] .homeNavLink {
   color: var(--color-brand);
 }

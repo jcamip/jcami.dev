@@ -46,7 +46,7 @@ const TIMELINE = [
 export default function AboutPage() {
   return (
     <>
-      <section className={styles.hero}>
+      <section className={styles.hero} data-header-dark>
         <div className={`container ${styles.heroInner}`}>
           <span className="eyebrow">About</span>
           <h1>Design is strategy made visible.</h1>

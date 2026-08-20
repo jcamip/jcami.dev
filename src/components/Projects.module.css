@@ -40,21 +40,36 @@
    the shared per-offset-step pixel distance .frame/.frameVisual both read,
    so the two rules can never drift out of sync with each other. */
 .stack {
-  --fan-step: clamp(28px, 11vw, 190px);
+  /* Scaled down from the fan's original clamp(28px, 11vw, 190px) — see the
+     .frame height note below for why: this box's own width no longer
+     bounds how big the mockups actually render, so the fan itself has to
+     be reined in directly, not just this box. */
+  --fan-step: clamp(20px, 7.5vw, 130px);
   position: relative;
-  width: 80vw;
+  width: 58vw;
   height: 90vh;
-  /* Deliberately wider than the site's --container-max (1200px) reading
-     column — this section's whole point is the mockups filling most of the
-     screen, not sitting in the normal text-content width. */
-  max-width: 1680px;
-  /* Nudges the whole fan left of center, reserving room on the right for
-     project details to land there later. Paired with the reduced 80vw
-     width above (rather than a bigger margin alone) so width + margin
-     stays comfortably under 100vw at every viewport — a too-large margin
-     here would overflow .project's bounds and clip the fan against its
-     "overflow: hidden" edge on medium/narrow screens. */
-  margin-inline-end: 14vw;
+  /* NOTE: unlike a typical flex item, this box's width does NOT bound how
+     wide the mockups inside it actually render — .frame's height comes
+     from clamp(...vh...) (viewport height), independent of this width, so
+     a wide-aspect image (the browser mockup) can render wider than
+     whatever this is set to. It has to stay comfortably clear of .details
+     (pinned to the right edge — see .details below) or the fan ends up
+     overlapping it — see .frame's own comment for the matching height
+     reduction that keeps that true here. */
+  max-width: 1100px;
+  /* .details is position: absolute (pinned to the corner, not a flex
+     sibling anymore), so this is .project's only flex child — without
+     this margin, justify-content: center alone would center it dead in
+     the full viewport width, too close to .details. Only needs to clear
+     .frame's own 960px width cap now (see .frame's comment) rather than
+     whatever an individual project's mockup aspect ratio happens to
+     render at — .frame's left: 0/right: 0/margin: auto can't center an
+     over-wide mockup (the over-constrained box resolves by honoring
+     left: 0 exactly and overflowing entirely past the right edge, not
+     spilling evenly past both sides), so that overflow is anchored
+     exactly at .stack's own left edge, i.e. where this margin puts it. */
+  margin-inline-end: 18vw;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,34 +83,221 @@
   transform: translateY(0) scale(1);
 }
 
-/* One mockup's hit box. This is the element mouseenter/mouseleave bind to
-   in ProjectMedia.tsx, and deliberately the ONLY thing that determines
-   hover — it sits at the image's resting position/size and never itself
-   animates (no --spread/--rot/--scale here, just the fixed --rest-spread
-   offset). Its child, .frameVisual, carries the actual hover motion. If
-   this box animated too, the hovered image would move out from under a
-   stationary cursor mid-transition, firing mouseleave, snapping back under
-   the cursor, firing mouseenter again — a jiggling loop. Keeping the hit
-   box still (while .frameVisual is free to render outside its bounds)
-   means the cursor keeps "owning" whichever mockup it started hovering
-   until it actually moves elsewhere. --size-scale lets an individual
-   mockup (e.g. the ipad) run a bit smaller than the shared height clamp.
-   Positioned via inset + margin: auto rather than the usual
-   translate(-50%, -50%) — deliberately NOT a transform. Any non-none
-   transform establishes its own stacking context, which would trap
-   .frameVisual's hover z-index bump inside it: .frameVisual would win
-   *within* .frame, but .frame's whole subtree would still lose to a
-   later sibling's whenever they overlap, since siblings with no z-index
-   of their own fall back to DOM order. That bug hid on desktop, where the
-   modest hover zoom rarely overlaps a pushed-aside sibling, and only
-   showed up once the mobile zoom (large enough to fill most of the
-   screen) started overlapping them regularly — a later mockup would
-   paint over an earlier one's zoomed-in visual regardless of which one
-   was actually focused. Plain inset/margin never creates a stacking
-   context, so .frameVisual's z-index now escapes correctly. left/right
-   are offset by equal-and-opposite amounts (rather than just shifting
-   left) so the auto-margin centering still lands on the same center,
-   nudged by --rest-spread, instead of anchoring from one edge. */
+
+/* The year/title column, pinned to the same right-edge padding as the
+   fixed home header's nav (Header.module.css .homeHeader's padding-inline:
+   --space-4/6/8 at the matching breakpoints below), so it lines up with
+   the end of the menu items above it. Vertically centered on .project's
+   own full height — a plain 50%, deliberately NOT offset to match the
+   image stack's own center (which sits slightly lower, since it's
+   confined to the area below the fixed header's reserved padding-
+   block-start): centering this block on the whole section is what keeps
+   the visible space above and below it equal, which is what actually
+   reads as "centered" to a viewer looking at the page, at the minor cost
+   of it sitting a bit above the stack's own vertical middle (this
+   shipped with a header-height's worth of extra space below instead of
+   above, once; see git history). year sits above title, both right-
+   aligned (align-items: flex-end), per the stacked column layout. Color
+   intentionally matches the home header's own text once it's over this
+   section (see Header.module.css .homeHeader[data-over-light]
+   .homeLogo/.homeNavLink). */
+.details {
+  position: absolute;
+  top: 50%;
+  right: var(--space-4);
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  text-align: right;
+}
+
+@media (min-width: 640px) {
+  .details {
+    right: var(--space-6);
+  }
+}
+
+@media (min-width: 768px) {
+  .details {
+    right: var(--space-8);
+  }
+}
+
+.year {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--color-brand);
+}
+
+/* Wraps just the title button so .descriptionPanel below can anchor to
+   the button's own box via position: absolute without affecting .details'
+   own box height (and so re-centering .details' translateY(-50%) — see
+   its comment) each time the panel opens/closes. Sized to the button's
+   content by default flex-item shrink-to-fit, so this adds no visible
+   layout of its own. */
+.titleWrap {
+  position: relative;
+}
+
+/* The title is a real <button> nested inside this <h3> purely so
+   assistive tech still gets heading semantics — the h3 itself carries no
+   visible styling (see .detailsTitle below for that). font-size: 0 kills
+   the h3's own inherited-from-globals.css line box "strut" (the invisible
+   box representing an element's own font metrics that CSS still reserves
+   space for in an inline formatting context even when its only content is
+   a nested element) so var(--text-h3) can't add unexplained extra height
+   above/below the button, which sets its own font-size independently. */
+.detailsTitleHeading {
+  font-size: 0;
+}
+
+/* Every typographic property the global h3 rule would have given this
+   element (if it were the h3 itself) is declared explicitly here instead
+   of inherited, since it's a <button> one level deeper. Hover/focus dims
+   it slightly as the "this opens something" affordance; the actual open
+   state is carried by .descriptionPanel below, not this button's own
+   appearance. cursor: none — the pointer itself is replaced by
+   .cursorHint (ProjectDetails.tsx tracks the mouse position while over
+   this button), not the browser's default hand cursor. */
+.detailsTitle {
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: none;
+  /* No text-align of its own — inherits .details' right (or the phone
+     override's center), so a wrapped multi-line title stays consistent
+     with the rest of this right-aligned column. */
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+  font-size: clamp(1rem, 2.6vw, 1.5rem);
+  color: var(--color-brand);
+  transition: opacity 0.2s var(--ease-out);
+}
+
+.detailsTitle:hover,
+.detailsTitle:focus-visible {
+  opacity: 0.75;
+}
+
+/* Follows the cursor while it's over .detailsTitle (ProjectDetails.tsx
+   sets left/top from the mousemove position, relative to .titleWrap —
+   see its own comment for why not the viewport). position: absolute
+   rather than fixed for exactly that reason. translate(-50%) centers it
+   under the cursor left/right; the Y half is -100% (its own height) minus
+   a 12px gap, lifting it entirely above the cursor rather than trailing
+   below it, where it was covering the first line of .descriptionPanel
+   once that opened underneath (this shipped covering it once; see git
+   history). */
+.cursorHint {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, calc(-100% - 12px));
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+  /* Same family/weight as .detailsTitle, just at a small pill-sized
+     font-size rather than the title's own clamp() scale. */
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-small);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* The description reveal. Named .descriptionPanel rather than .description
+   — the "Hidden for now" block at the bottom of this file already defines
+   a dead .description rule for a different (unused) overlay design, and
+   CSS modules scope by class name across the whole file, so reusing that
+   name here would have silently pulled in its rgba-white/text-body-lg
+   values too, nearly invisible against this white section. Absolutely
+   positioned and right-aligned to .titleWrap's own right edge (i.e. the
+   title's own right edge, since .details is a whole right-pinned column —
+   see .details above) so it only ever grows leftward/downward from a
+   fixed anchor, regardless of how wide the description or CTA end up,
+   rather than affecting .details' own box height (which would shift
+   .details' translateY(-50%) vertical centering every time it opens —
+   see .titleWrap's comment). opacity + transform only (see performance
+   habits); pointer-events stays off while closed so the invisible panel
+   can never intercept a click meant for whatever's behind it. z-index
+   guards against a hovered/zoomed mockup from .stack painting over it if
+   the fan ever reaches this far right. */
+.descriptionPanel {
+  position: absolute;
+  top: calc(100% + var(--space-3));
+  right: 0;
+  z-index: 2;
+  width: max-content;
+  max-width: min(300px, 70vw);
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.descriptionPanel[data-open] {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* text-align: right (inherited from .details, not redeclared here) is
+   what actually gives the typing animation its right-to-left look:
+   ProjectDetails.tsx still reveals the string in normal 0..N reading
+   order (reversing the characters themselves would render unreadable
+   nonsense mid-type) — right-aligning is what keeps the newest character
+   anchored at this fixed right edge while the revealed text grows
+   leftward from it, one character at a time. */
+.descriptionText {
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--color-neutral-700);
+}
+
+/* Follows the description text and fades in on its own once typing
+   finishes (see ProjectDetails.tsx's isTyped), rather than appearing
+   already-visible under half-typed copy. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-caption);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out), gap 0.2s var(--ease-out);
+}
+
+.cta[data-visible] {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.cta:hover {
+  gap: var(--space-3);
+}
+
+.cta svg {
+  flex-shrink: 0;
+}
+
+
 .frame {
   position: absolute;
   top: 0;
@@ -104,24 +306,32 @@
   right: calc(var(--rest-spread, 0) * var(--fan-step) * -1);
   margin: auto;
   width: auto;
-  height: calc(clamp(280px, 64vh, 760px) * var(--size-scale, 1));
-  /* Backstop for tall/narrow viewports (e.g. portrait tablets), where a
-     height driven mostly by vh could otherwise resolve to a width well
-     past the screen for a wide image like the browser mockup. */
-  max-width: 85vw;
+  /* Dialed back up from an earlier, more cramped pass at this
+     (clamp(240px, 54vh, 620px)) — now that .details is pinned to the
+     corner independent of .stack (see .details/.stack's own comments),
+     there's room to size the mockups for readability again without
+     reintroducing the overlap that smaller pass was fixing. Still short
+     of the original clamp(280px, 64vh, 760px), which left no clearance at
+     all once .details started rendering real copy instead of a bare
+     title. */
+  height: calc(clamp(260px, 62vh, 720px) * var(--size-scale, 1));
+  /* Two backstops: 85vw for tall/narrow viewports (where a height driven
+     mostly by vh could resolve to a width well past the screen), and
+     960px so a single unusually wide-aspect screenshot (a landscape
+     mockup noticeably wider than the typical browser-chrome one — see
+     ProjectMedia.tsx's aspectRatio) can't single-handedly force .stack's
+     .details clearance (see .stack's own comment) wider than every other
+     project needs. Past 960px this clips the mockup's height slightly
+     (object-fit: contain on .frameImage below just letterboxes rather
+     than distorting it) instead of letting it overlap .details — a much
+     smaller visual cost than that overlap once was (this shipped
+     overlapping once; see git history). */
+  max-width: min(85vw, 960px);
   /* No z-index here on purpose — see the long comment in ProjectMedia.tsx
      next to how .frame's style is built. */
 }
 
-/* The animated visual, filling .frame's box at rest (--spread-delta: 0)
-   and free to translate/rotate/scale away from it on hover. Because
-   .frame has no rotation of its own, --spread-delta's translateX composes
-   in plain screen-aligned space — no matrix-composition surprises from a
-   rotated parent. --hover-scale (not --scale) drives the zoom while
-   [data-hovered] — it's a plain CSS value rather than something
-   ProjectMedia.tsx computes, specifically so the mobile media query below
-   can zoom in much further on a phone-sized mockup without any component
-   logic needing to know about breakpoints. */
+
 .frameVisual {
   --hover-scale: 1.22;
   position: absolute;
@@ -146,36 +356,165 @@
 }
 
 /* ==========================================================================
-   Responsive — phones. Two things change: the resting fan shrinks and
-   pulls in (so all the mockups fit on-screen at once instead of spilling
-   off the edges), and the reserved-for-later right margin goes away
-   (there's no room for a side-by-side details column on a phone; that
-   content will stack below instead once it exists).
+   Responsive — phones. .project drops to a single column with .details
+   above .stack (order: -1 — DOM order stays [stack, details], since that's
+   still the right tab order on desktop where .details is the only
+   interactive part; this only reorders how they PAINT). Both size to
+   their own content and pack up near the header with a modest gap between
+   them, rather than each being forced to exactly half the section's
+   height — that even split (tried first; see git history) left large,
+   awkward gaps of dead space above/below content that didn't need it.
+   Any real leftover space just settles at the bottom of the section
+   instead. .details also rejoins normal flow, centered under the image,
+   instead of staying pinned to the corner (there's no persistent visible
+   nav edge to line up with on mobile, where the menu collapses to a
+   toggle). The resting fan shrinks and pulls in too, so all the mockups
+   fit on-screen at once instead of spilling off the edges.
    ========================================================================== */
 @media (max-width: 640px) {
+  .project {
+    flex-direction: column;
+    justify-content: flex-start;
+    /* A bit more than the description panel's own margin-top (space-3)
+       below, so the resting (description-closed) gap between the title
+       and the image reads as deliberate rather than merely "whatever the
+       description would need anyway." */
+    gap: var(--space-10);
+  }
+
+  .details {
+    order: -1;
+    position: static;
+    transform: none;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Mobile has no real cursor to replace — .cursorHint only ever gets a
+     position from mousemove, which touch input doesn't fire, so this is
+     mostly dead weight here rather than a functioning bug, but a
+     mouse-enabled touchscreen (or a stray pointer event) could still
+     trigger it. Hidden outright, with the title's own cursor reset back
+     to a plain pointer instead of .detailsTitle's desktop cursor: none
+     (which exists purely to get out of .cursorHint's way). */
+  .cursorHint {
+    display: none;
+  }
+
+  .detailsTitle {
+    cursor: pointer;
+  }
+
   .stack {
+    /* Desktop's --fan-step/width/margin are tuned around a ~1000px+
+       .stack sharing a row with a pinned .details — none of that applies
+       to a full-width column on a phone, so all three get a phone-sized
+       reset rather than just the fan-step alone (this shipped with the
+       desktop values still active at phone widths once — cramped fan,
+       no centering — see git history). */
     --fan-step: clamp(10px, 5vw, 40px);
     width: 92vw;
     margin-inline-end: 0;
+    /* Every .frame inside is position: absolute, so none of them
+       contribute to this box's own size — it needs an explicit height of
+       its own regardless (this shipped as height: auto once, collapsing
+       .stack to 0 and the images with it; see git history). Sized a
+       little past .frame's own height clamp below (160–340px) for
+       breathing room around the fan's rotation/lift, the same relationship
+       desktop's 90vh has to its own (much larger) frame clamp. */
+    height: clamp(180px, 44vh, 360px);
+    /* .stack's own entrance-fade transform (translateY/scale, see its
+       base rule) makes it a stacking context in its own right once
+       [data-visible] — which TRAPS .frameVisual's z-index: 20 boost
+       inside it: that only ever wins against .stack's OWN other
+       children (sibling mockups), not against .details, since from
+       .details' perspective .stack is just one opaque box with no
+       z-index of its own (auto). .details' own descriptionPanel/cta
+       carry an incidental transform too (their opacity/transform-in
+       transitions never fully reset to a plain "none", even closed), so
+       they're ALSO their own stacking context — and with both sides
+       equally "z-index: auto", the tie goes to whichever is LATER in DOM
+       order, which is .details (ProjectDetails renders after
+       ProjectMedia) — regardless of which specific mockup is focused or
+       how high its own internal z-index climbs (this shipped with the
+       focused mockup still painting BEHIND .details' text because of
+       exactly this, no matter how much its own z-index/size was
+       increased; see git history). An explicit z-index here — as this
+       whole box, not just one descendant — is what actually settles it:
+       .stack now unconditionally outranks .details' effective level (0),
+       regardless of DOM order. Safe unconditionally rather than only
+       while a mockup is zoomed: at rest the two never visually overlap,
+       so which one wins the tie is invisible either way. */
+    z-index: 2;
   }
 
+  /* Desktop keeps this position: absolute so opening it can never shift
+     the title/image beside it (see .descriptionPanel's own comment) — but
+     .project is a fixed ~100vh box with overflow: hidden, and on this
+     column layout the title already sits vertically centered in it with
+     little slack below before that edge. An absolutely positioned panel
+     doesn't make .project grow to fit it, so it was rendering clipped off
+     the bottom of the section instead of showing (this shipped once; see
+     git history). Rejoining normal flow here lets .project's min-height
+     (not a fixed height) grow to fit it instead — at the cost of a small
+     shift as the centered column grows, which is an acceptable trade for
+     a tap-triggered reveal. display: none/block rather than opacity alone
+     since a static, closed-but-invisible panel would otherwise still
+     reserve its own line height, leaving a dead gap under every title. */
+  .descriptionPanel {
+    position: static;
+    right: auto;
+    margin: var(--space-3) auto 0;
+    text-align: center;
+    transform: none;
+    display: none;
+  }
+
+  /* [data-open] repeated here (not just above) because the desktop
+     .descriptionPanel[data-open] rule's own transform: translateY(0) —
+     same specificity as this whole block's plain .descriptionPanel
+     transform: none, but a more specific selector always wins regardless
+     of source order — kept overriding it back on whenever the panel was
+     open, which is effectively always here now that it opens
+     automatically (see ProjectDetails.tsx). translateY(0) is NOT the
+     same as the keyword none — it's a real, if visually inert,
+     transform — and any non-none transform makes an element a stacking
+     context in its own right (independent of its static position),
+     which is what let this panel's content paint above .stack instead of
+     under a zoomed mockup regardless of that mockup's own z-index (this
+     shipped that way — .stack's z-index bump above exists as a second,
+     independent guard against the same failure; see git history). */
+  .descriptionPanel[data-open] {
+    display: block;
+    transform: none;
+  }
+
+  /* Sized up from clamp(120px, 30vh, 260px) now that .stack isn't forced
+     into half the section (see .stack's own comment) — there's room for
+     bigger mockups without fighting a fixed-height box for it. */
   .frame {
-    height: calc(clamp(120px, 30vh, 260px) * var(--size-scale, 1));
-    max-width: 78vw;
+    height: calc(clamp(160px, 40vh, 340px) * var(--size-scale, 1));
+    max-width: 82vw;
   }
 
-  /* On desktop, hovering just scales the rest size up (--hover-scale:
-     1.22) — fine there, since even the wide browser mockup has room. Doing
-     the same on a phone doesn't work: a scale big enough to make the
-     narrow portrait phone mockup fill the screen would blow the wide
-     landscape browser mockup way past the screen's width. So instead of
-     scaling, the focused mockup sizes itself independently here — as
-     large as it can while fitting BOTH a height and a width ceiling,
-     using its own --aspect (set in ProjectMedia.tsx) to convert the width
-     ceiling into a matching height via aspect-ratio. Whichever ceiling is
-     tighter for that mockup's shape wins, so a tall phone mockup ends up
-     height-bound and a wide browser mockup ends up width-bound — each
-     filling as much of the screen as its own proportions allow. */
+  /* Phones have no hover, so [data-hovered] here is driven by tapping a
+     specific mockup (ProjectMedia.tsx's tappedIndex, unified with real
+     hoveredIndex into one activeIndex) rather than the mouse leaving/
+     entering it — the same class, same rule, same "one mockup zooms,
+     centered, the rest fan smaller aside it" effect either way, just
+     triggered differently. On desktop, hovering just scales the rest size
+     up (--hover-scale: 1.22) — fine there, since even the wide browser
+     mockup has room. Doing the same on a phone doesn't work: a scale big
+     enough to make the narrow portrait phone mockup fill the screen would
+     blow the wide landscape browser mockup way past the screen's width.
+     So instead of scaling, the focused mockup sizes itself independently
+     here — as large as it can while fitting BOTH a height and a width
+     ceiling, using its own --aspect (set in ProjectMedia.tsx) to convert
+     the width ceiling into a matching height via aspect-ratio. Whichever
+     ceiling is tighter for that mockup's shape wins, so a tall phone
+     mockup ends up height-bound and a wide browser mockup ends up
+     width-bound — each filling as much of the screen as its own
+     proportions allow. */
   .frameVisual[data-hovered="true"] {
     inset: auto;
     top: 50%;
@@ -192,6 +531,7 @@
     transform: translate(-50%, -50%) translateX(calc(var(--spread-delta, 0) * var(--fan-step)))
       rotate(var(--rot, 0deg));
   }
+
 }
 
 /* ==========================================================================

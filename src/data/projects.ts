@@ -26,7 +26,7 @@ export type Project = {
   slug: string;
   title: string;
   description: string;
-  href: string;
+  href?: string;
   year?: number;
   images: ProjectImage[];
 };
@@ -34,7 +34,7 @@ export type Project = {
 export const PROJECTS: Project[] = [
   {
     slug: "ry",
-    title: "RSVP Wedding Website",
+    title: "RSVP Website",
     year: 2026,
     description:
       "A full identity and digital wedding website for a couple's big day, with a custom RSVP form that feeds into a Google Sheet for easy guest management.",
@@ -65,10 +65,10 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "sec",
-    title: "Product Launch — Solace App",
+    title: "Business & Corporate",
     description:
-      "End-to-end campaign and product experience design for a wellness app's public debut.",
-    href: "https://example.com/solace-app",
+      "Designed for a renewable energy company, this corporate website presents its services, mission, and sustainable solutions while making it easier for customers to get in touch.",
+    href: "https://www.secsolar.ae/",
     year: 2025,
     images: [
       {
@@ -78,9 +78,37 @@ export const PROJECTS: Project[] = [
         width: 2870,
         height: 1552,
       },
-      // A "sec-mobile" companion (following the <slug>-<type> convention
-      // above) went missing from public/projects/ mid-edit — see chat.
-      // Add it back here once the asset exists again.
+    ],
+  },
+    {
+    slug: "1bfs",
+    title: "Online Ticketing Platform",
+    year: 2024,
+    description:
+      "Built as an online ticketing platform, the website allows users to purchase tickets and access them easily through a dedicated portal.",
+    // href: "https://rigorandirene.com",
+    images: [
+      {
+        type: "browser",
+        src: "/projects/ry-browser.png",
+        alt: "Wedding website shown in a browser window",
+        width: 1356,
+        height: 880,
+      },
+      {
+        type: "ipad",
+        src: "/projects/ry-ipad.png",
+        alt: "Wedding website shown on a tablet",
+        width: 780,
+        height: 1169,
+      },
+      {
+        type: "mobile",
+        src: "/projects/ry-mobile.png",
+        alt: "Wedding website shown on a phone",
+        width: 580,
+        height: 1252,
+      },
     ],
   },
 ];
