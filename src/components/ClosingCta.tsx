@@ -20,7 +20,7 @@ export default function ClosingCta() {
         <h2>Have a project in mind? Let&rsquo;s set up a meeting.</h2>
         <p>
           Book a free 30-minute call and let&rsquo;s talk through your goals, timeline, and how I
-          can help.
+          can help. I work remotely, with clients everywhere.
         </p>
         <Button
           href={CALENDLY_URL}

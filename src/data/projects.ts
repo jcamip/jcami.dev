@@ -67,7 +67,7 @@ export const PROJECTS: Project[] = [
     slug: "sec",
     title: "Business & Corporate",
     description:
-      "Designed for a renewable energy company, this corporate website presents its services, mission, and sustainable solutions while making it easier for customers to get in touch.",
+      "Designed for a renewable energy company, this business website presents its services, mission, and sustainable solutions while making it easier for customers to get in touch.",
     href: "https://www.secsolar.ae/",
     year: 2025,
     images: [

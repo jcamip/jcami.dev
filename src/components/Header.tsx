@@ -28,12 +28,20 @@ const OVERLAY_LAYOUT_PATHS = new Set(["/", "/about", "/services", "/connect"]);
 // with a permanently dark, opaque backdrop instead (.homeHeaderSolid).
 const TRANSPARENT_OVER_DARK_HERO_PATHS = new Set(["/", "/about", "/services"]);
 
+// Connect's hero is a single viewport-tall split (photo + form) rather than
+// a scrolling deck of sections, so pinning the header there just leaves it
+// hovering over the form for the entire scroll with nothing gained — unlike
+// Home/About/Services, there's no later content it needs to stay visible
+// above. Scrolls away with the page instead of staying fixed.
+const STATIC_OVERLAY_PATHS = new Set(["/connect"]);
+
 export default function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isHome = pathname === "/";
   const useOverlayLayout = OVERLAY_LAYOUT_PATHS.has(pathname);
   const transparentOverDarkHero = TRANSPARENT_OVER_DARK_HERO_PATHS.has(pathname);
+  const scrollsWithPage = STATIC_OVERLAY_PATHS.has(pathname);
 
   // The transparent header sits over each page's dark hero, then over
   // whatever lighter content follows as the visitor scrolls — white reads
@@ -141,7 +149,9 @@ export default function Header() {
     <header
       className={
         useOverlayLayout
-          ? `${styles.homeHeader} ${transparentOverDarkHero ? "" : styles.homeHeaderSolid}`
+          ? `${styles.homeHeader} ${transparentOverDarkHero ? "" : styles.homeHeaderSolid} ${
+              scrollsWithPage ? styles.homeHeaderStatic : ""
+            }`
           : styles.header
       }
       data-over-light={(transparentOverDarkHero && overLightSection) || undefined}

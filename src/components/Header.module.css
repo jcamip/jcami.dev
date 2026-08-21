@@ -39,7 +39,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-small);
-  color: var(--color-secondary);
+  color: var(--color-brand);
   /* opacity: 0.5; */
   transition: color 0.2s var(--ease-out), opacity 0.2s var(--ease-out);
 }
@@ -69,7 +69,7 @@
   position: relative;
   font-size: var(--text-small);
   font-weight: 600;
-  color: var(--color-neutral-700);
+  color: var(--color-brand);
   padding-block: var(--space-2);
   transition: color 0.2s var(--ease-out);
 }
@@ -194,7 +194,7 @@
   font-size: var(--text-h4);
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--color-secondary);
+  color: var(--color-brand);
 }
 
 .mobileNavLink[data-active] {
@@ -227,20 +227,49 @@
 }
 
 /* Solid tone — same chrome as the plain .header (translucent white,
-   blurred, bottom border) so the overlay layout stays legible without a
-   dark backdrop behind it. .homeLogo/.homeNavLink default to white for
-   the transparent tone, so both need the dark override here; the hover
-   opacity rules on each already apply regardless of color. */
+   blurred) so the overlay layout stays legible without a dark backdrop
+   behind it. No border/shadow: the reference layout relies on the photo
+   beside it for contrast rather than a hard seam, so the header blends
+   into the white form panel exactly like it blends into the page
+   background in that reference. .homeLogo/.homeNavLink default to white
+   for the transparent tone, so both need the dark override here; the
+   hover opacity rules on each already apply regardless of color. */
 .homeHeaderSolid {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .homeHeaderSolid .homeLogo,
 .homeHeaderSolid .homeNavLink {
-  color: var(--color-secondary);
+  color: var(--color-brand);
+}
+
+/* Scrolls away with the page instead of staying pinned to the viewport —
+   see STATIC_OVERLAY_PATHS in Header.tsx for which routes opt into this.
+   Also pins the box to exactly --header-height instead of the auto height
+   .homeHeader gets from its padding + stacked nav links above 900px (that
+   auto height runs a few px taller than --header-height once 3 stacked
+   nav lines are in it) — main's padding-top and .split's min-height both
+   budget for exactly --header-height, so without this the header's real
+   bottom edge lands a few px into the image below it.
+
+   Deliberately NOT display:flex on .homeHeaderStatic itself — .homeBar
+   (below) relies on being a plain full-width block child to right-align
+   its content via its own justify-content: flex-end; making the parent a
+   flex container instead turns .homeBar into a shrink-to-fit flex item
+   that collapses to its content width and lands at the parent's
+   flex-start, i.e. the nav reads as pinned left. Centering happens one
+   level down instead, on .homeBar, which stays full-width either way. */
+.homeHeaderStatic {
+  position: absolute;
+  height: var(--header-height);
+  padding-block: 0;
+}
+
+.homeHeaderStatic .homeBar {
+  height: 100%;
+  align-items: center;
 }
 
 @media (min-width: 640px) {

@@ -10,25 +10,26 @@ export const metadata: Metadata = {
 
 export default function ConnectPage() {
   return (
-    <section className={styles.split}>
+    <section className={styles.hero}>
       <div className={styles.imageCol}>
         <Image
-          src="/images/connect-photo.jpg"
-          alt="Joane Camille"
+          src="/images/hc.png"
+          alt=""
           fill
           priority
-          sizes="(min-width: 900px) 50vw, 100vw"
+          sizes="(min-width: 1280px) 520px, 100vw"
           className={styles.image}
         />
       </div>
 
       <div className={styles.formCol}>
-        <h1 className={styles.headline}>
-          Have a project in mind? Tell me what you&rsquo;re building, where you want to go, and
-          how I can help. I work remotely, with clients everywhere.
-        </h1>
+        <div className={styles.formContent}>
+          <h1 className={styles.headline}>
+            Bring me the idea you can’t stop thinking about. I’ll give it everything I’ve got.
+          </h1>
 
-        <ContactForm />
+          <ContactForm />
+        </div>
       </div>
     </section>
   );

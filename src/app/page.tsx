@@ -89,7 +89,6 @@ export default function Home() {
       </section>
 
       <Projects />
-      <ClosingCta />
     </>
   );
 }

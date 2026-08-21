@@ -1,7 +1,7 @@
 /* ClosingCta — white full-viewport closing screen, directly after the last
-   project (Projects.module.css .project — same border-top/scroll-snap/
-   header-clearance recipe as that section, so this reads as one more
-   screen in the same sequence rather than a visually distinct chapter).
+   project (Projects.module.css .project — same scroll-snap/header-clearance
+   recipe as that section, so this reads as one more screen in the same
+   sequence rather than a visually distinct chapter).
    Staying on the light neutral-0 background is deliberate, not just
    decorative: the fixed header only knows this section is light because
    it *isn't* marked [data-header-dark] (see Header.tsx's overLightSection
@@ -14,7 +14,6 @@
   grid-template-rows: 1fr auto;
   background: var(--color-neutral-0);
   color: var(--color-neutral-900);
-  border-top: 1px solid var(--color-neutral-200);
   padding-block-start: var(--header-height);
   scroll-snap-align: start;
   scroll-snap-stop: always;

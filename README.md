@@ -20,6 +20,24 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Contact form
+
+The contact form ([src/components/ContactForm.tsx](src/components/ContactForm.tsx)) submits to
+[src/app/api/contact/route.ts](src/app/api/contact/route.ts), which sends the message to
+`hello@jcami.dev` via [Resend](https://resend.com).
+
+Email sending is configured in the Resend dashboard, not in this repo:
+
+1. Verify the `jcami.dev` domain under [resend.com/domains](https://resend.com/domains) (adds SPF/DKIM DNS records).
+2. Create an API key under [resend.com/api-keys](https://resend.com/api-keys).
+3. Set it locally in `.env.local` (gitignored) and in your host's env vars for production — see `.env.example`:
+
+   ```bash
+   RESEND_API_KEY=re_...
+   ```
+
+Without a verified domain, Resend will only deliver from its shared `onboarding@resend.dev` address to the account's own email — useful for testing before DNS propagates.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

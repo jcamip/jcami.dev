@@ -1,14 +1,14 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-1);
   max-width: 640px;
 }
 
 .row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-6);
+  gap: var(--space-3);
 }
 
 @media (min-width: 560px) {
@@ -17,18 +17,14 @@
   }
 }
 
+/* The field's own <label> is visually hidden (see ContactForm.tsx) —
+   still read by screen readers per the accessibility baseline ("forms
+   always have associated labels"), but sighted users see the same copy
+   as the input's placeholder instead, so each field is one line instead
+   of a label line plus an input line. */
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-}
-
-.field label {
-  font-size: var(--text-caption);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-neutral-700);
 }
 
 .field input,
@@ -37,23 +33,55 @@
   border-bottom: 1px solid var(--color-neutral-300);
   border-radius: 0;
   background: transparent;
-  padding: var(--space-3) 0;
+  padding: var(--space-1) 0;
   font-size: var(--text-body);
   font-family: var(--font-body);
-  color: var(--color-secondary);
+  color: var(--color-brand);
   resize: vertical;
-  min-height: 44px;
+  /* A fixed height rather than min-height: a textarea's "natural" height
+     for rows={1} is the browser's own row/line-height math, which doesn't
+     reliably land on the same number as an <input>'s natural height
+     across browsers — min-height just let whichever was taller win. Fixing
+     both to the same literal number sidesteps that mismatch entirely. The
+     textarea's onInput handler in ContactForm.tsx overrides this via
+     inline style once typed content needs more room. */
+  height: 38px;
   transition: border-color 0.2s var(--ease-out);
 }
 
+.field input::placeholder,
+.field textarea::placeholder {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+  opacity: 1;
+}
+
+/* Unlike an <input>, a textarea always lays its text out as block content
+   rather than centering it in a UA-managed box — and the 1.6 line-height
+   inherited from body leaves slack above/below the glyphs ("leading") for
+   that layout to distribute. Chromium splits it evenly (looks centered);
+   WebKit places it all below (text reads pinned to the top) — same CSS,
+   different result. line-height: 1 removes that slack entirely, so the
+   single line exactly fills the content box (height − padding-block * 2)
+   with nothing left for either engine to distribute inconsistently, and
+   padding-block alone now determines the vertical position identically
+   everywhere. resize/overflow are handed to the onInput auto-grow handler
+   in ContactForm.tsx instead of the browser's native drag handle. */
 .field textarea {
-  min-height: 44px;
+  line-height: 1;
+  padding-block: 11px;
+  resize: none;
+  overflow: hidden;
 }
 
 .field input:focus,
 .field textarea:focus {
   outline: none;
-  border-bottom-color: var(--color-primary);
+  border-bottom-color: var(--color-brand);
 }
 
 .submit {
@@ -61,7 +89,7 @@
   align-items: center;
   gap: var(--space-2);
   align-self: flex-start;
-  margin-top: var(--space-2);
+  margin-top: var(--space-6);
   font-family: var(--font-body);
   font-weight: 700;
   font-size: var(--text-small);

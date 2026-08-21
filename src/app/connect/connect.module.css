@@ -1,46 +1,91 @@
-.split {
-  display: grid;
-  grid-template-columns: 1fr;
-  min-height: calc(100vh - var(--header-height));
-}
-
-@media (min-width: 900px) {
-  .split {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* Left — photo panel, full-bleed */
-.imageCol {
+.hero {
   position: relative;
-  min-height: 360px;
-  background: var(--color-neutral-900);
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--header-height));
+  background: var(--color-neutral-0);
 }
 
-@media (min-width: 900px) {
-  .imageCol {
-    min-height: 100%;
-  }
+/* Mobile/tablet (up to iPad) — hand image sits as a full-bleed backdrop
+   behind the headline + form. Opacity keeps the text readable over it. */
+.imageCol {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 .image {
   object-fit: cover;
+  object-position: center;
+  opacity: 0.4;
 }
 
-/* Right — form panel */
 .formCol {
+  position: relative;
+  z-index: 1;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  gap: var(--space-12);
+  width: 100%;
   padding: var(--space-16) var(--space-6);
-  background: var(--color-neutral-100);
+  background: transparent;
 }
 
 @media (min-width: 640px) {
   .formCol {
-    padding: var(--space-24) var(--space-12);
+    padding: var(--space-16) var(--space-8);
   }
+}
+
+/* Desktop — image column pinned to the left edge at a fixed width
+   (image itself uses object-fit: contain so the full hand always shows,
+   full opacity), form column fills the rest with the content centered
+   inside it, so the gap left of the form (to the image) and right of the
+   form (to the screen edge) stay equal. Kicks in above tablet/iPad sizes. */
+@media (min-width: 1280px) {
+  .hero {
+    flex-direction: row;
+  }
+
+  .imageCol {
+    position: relative;
+    inset: auto;
+    z-index: auto;
+    flex: 0 0 clamp(360px, 40vw, 520px);
+    /* Column height stretches to the hero row (bounded by the viewport),
+       so it can never grow taller than the screen. The source PNG has a
+       transparent margin above and to the right of the hand (~12% top,
+       ~9% right — it's cropped tight on the left/bottom already), so a
+       small zoom on .image (anchored bottom-left, clipped by overflow:
+       hidden) crops that dead space out and makes the hand read bigger
+       without the column itself growing past view height. */
+    align-self: stretch;
+    width: clamp(360px, 40vw, 520px);
+    height: auto;
+    overflow: hidden;
+  }
+
+  .image {
+    opacity: 1;
+    object-fit: contain;
+    object-position: left center;
+    transform: scale(1.05);
+    transform-origin: left bottom;
+  }
+
+  .formCol {
+    flex: 1 1 auto;
+    align-items: center;
+    padding-right: var(--space-24);
+    background: var(--color-neutral-0);
+  }
+}
+
+.formContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 560px;
 }
 
 .headline {

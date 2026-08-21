@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Manrope } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import RouteScrollReset from "@/components/RouteScrollReset";
 import "./globals.css";
+import ClosingCta from "@/components/ClosingCta";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -32,9 +34,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${manrope.variable}`}>
       <body>
+        <RouteScrollReset />
         <Header />
         <main>{children}</main>
-        <Footer />
+        <ClosingCta />
       </body>
     </html>
   );
