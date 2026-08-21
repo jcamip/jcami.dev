@@ -1,0 +1,211 @@
+/* Local, section-scoped accent — the reference's pale icy-cyan skill text
+   isn't part of the site-wide palette (globals.css), so it lives here
+   rather than being added as a new global color token for one section. */
+.skills {
+  --skills-item-color: #d9f6f2;
+
+  position: relative;
+  overflow: hidden;
+  color: var(--color-neutral-0);
+  /* Dark-to-brand-red glow bleeding in from the bottom-right corner, over
+     a near-black base — same two colors (--color-secondary,
+     --color-brand) the rest of the dark sections on this page already
+     use, just combined into a gradient instead of a flat fill. */
+  background:
+    radial-gradient(130% 110% at 100% 100%, rgba(200, 0, 0, 0.75) 0%, rgba(200, 0, 0, 0) 60%),
+    radial-gradient(90% 70% at 0% 0%, rgba(200, 0, 0, 0.3) 0%, rgba(200, 0, 0, 0) 55%),
+    linear-gradient(180deg, var(--color-secondary) 0%, #050509 100%);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.heading {
+  max-width: 760px;
+}
+
+.skills :global(.eyebrow) {
+  color: var(--color-accent);
+}
+
+.heading :global(h2) {
+  color: var(--color-neutral-0);
+}
+
+.heading :global(p) {
+  color: var(--color-neutral-300);
+}
+
+.rows {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-4);
+  row-gap: var(--space-0);
+  align-items: baseline;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.rowImage {
+  grid-column: 1 / -1;
+  position: absolute;
+  z-index: -1;
+  width: clamp(220px, 30vw, 340px);
+  aspect-ratio: 4 / 5;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  pointer-events: none;
+}
+
+.rowImage[data-visible] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rowImage {
+    transition: opacity 0.6s var(--ease-out);
+    transform: none;
+  }
+}
+
+.rowImageImg {
+  object-fit: cover;
+}
+
+.rowImage[data-side="left"] {
+  top: 0;
+  left: -220px;
+}
+
+.rowImage[data-side="right"] {
+  top: var(--space-8);
+  right: -120px;
+}
+
+.rowImage[data-group-index="0"] {
+  left: -280px;
+  top: var(--space-12);
+}
+
+@media (max-width: 767px) {
+  .rowImage {
+    width: min(260px, 68vw);
+  }
+
+
+  .rowImage[data-side="left"] {
+    left: 0;
+  }
+
+  .rowImage[data-side="right"] {
+    right: 0;
+  }
+
+  .rowImage[data-group-index="2"] {
+    left: -140px;
+  }
+
+
+  .rowLabel,
+  .rowText {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 2px 14px rgba(0, 0, 0, 0.75);
+  }
+}
+
+.rowLabel {
+  position: relative;
+  isolation: isolate;
+  font-family: var(--font-serif-display), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  /* --text-h2 is itself a clamp(), so it already scales with the
+     viewport — no separate desktop override needed the way --text-h4
+     needed bumping to --text-h3 before. */
+     font-size: var(--text-h3);
+  color: var(--color-neutral-300);
+  text-align: right;
+  white-space: nowrap;
+}
+
+
+.rowLabel[data-glitch]::before,
+.rowLabel[data-glitch]::after {
+  content: attr(data-glitch);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.rowLabel[data-glitch]::before {
+  color: var(--color-brand);
+  animation: rowLabelGlitch 2.6s steps(1) infinite;
+}
+
+.rowLabel[data-glitch]::after {
+  color: var(--color-accent);
+  animation: rowLabelGlitch 2.6s steps(1) infinite reverse;
+}
+
+@keyframes rowLabelGlitch {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  8% {
+    transform: translate(-6px, 4px);
+  }
+  16% {
+    transform: translate(5px, -4px);
+  }
+  24% {
+    transform: translate(0, 0);
+  }
+  46% {
+    transform: translate(-5px, -4px);
+  }
+  54% {
+    transform: translate(6px, 4px);
+  }
+  62% {
+    transform: translate(0, 0);
+  }
+  80% {
+    transform: translate(-6px, 3px);
+  }
+  88% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rowLabel[data-glitch]::before,
+  .rowLabel[data-glitch]::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.rowText {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h4);
+  letter-spacing: -0.01em;
+  color: var(--skills-item-color)
+}
+
+@media (min-width: 768px) {
+  .rowLabel {
+    min-width: 9rem;
+  }
+
+  .rowText {
+    font-size: var(--text-h3);
+  }
+}
