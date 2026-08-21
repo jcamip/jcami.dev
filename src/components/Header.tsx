@@ -31,9 +31,19 @@ const TRANSPARENT_OVER_DARK_HERO_PATHS = new Set(["/", "/about", "/services"]);
 // Connect's hero is a single viewport-tall split (photo + form) rather than
 // a scrolling deck of sections, so pinning the header there just leaves it
 // hovering over the form for the entire scroll with nothing gained — unlike
-// Home/About/Services, there's no later content it needs to stay visible
-// above. Scrolls away with the page instead of staying fixed.
-const STATIC_OVERLAY_PATHS = new Set(["/connect"]);
+// Home/About, there's no later content it needs to stay visible above.
+// Scrolls away with the page instead of staying fixed. Services opts into
+// the same behavior by request — its header sits at the top of the hero
+// and scrolls off with it rather than staying pinned over the video for
+// the rest of the page.
+const STATIC_OVERLAY_PATHS = new Set(["/connect", "/services"]);
+
+// Services wants its nav links (About/Services/Connect) permanently in
+// brand red instead of the white the overlay layout otherwise gives them
+// over a dark hero — the JOANE CAMILLE wordmark stays white regardless,
+// so this only touches .homeNavLink (see [data-brand-nav] in
+// Header.module.css), not .homeLogo.
+const BRAND_NAV_PATHS = new Set(["/services"]);
 
 export default function Header() {
   const pathname = usePathname();
@@ -42,6 +52,7 @@ export default function Header() {
   const useOverlayLayout = OVERLAY_LAYOUT_PATHS.has(pathname);
   const transparentOverDarkHero = TRANSPARENT_OVER_DARK_HERO_PATHS.has(pathname);
   const scrollsWithPage = STATIC_OVERLAY_PATHS.has(pathname);
+  const forceBrandNav = BRAND_NAV_PATHS.has(pathname);
 
   // The transparent header sits over each page's dark hero, then over
   // whatever lighter content follows as the visitor scrolls — white reads
@@ -155,6 +166,7 @@ export default function Header() {
           : styles.header
       }
       data-over-light={(transparentOverDarkHero && overLightSection) || undefined}
+      data-brand-nav={forceBrandNav || undefined}
     >
       <div className={useOverlayLayout ? styles.homeBar : `container ${styles.bar}`}>
         <div className={useOverlayLayout ? styles.homeBrandNav : styles.brandNav}>

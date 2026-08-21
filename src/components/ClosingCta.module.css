@@ -40,7 +40,7 @@
 }
 
 /* Same small-caps label recipe as Projects.module.css's .year — brand red
-   rather than the generic global .eyebrow utility (indigo text, lime dot)
+   rather than the generic global .eyebrow utility (indigo text, accent dot)
    so this ties back to the red that already carries the home page's theme
    through the hero and the project titles/years, instead of introducing
    an unrelated accent color this late in the page. */

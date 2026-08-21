@@ -198,7 +198,7 @@
 }
 
 .mobileNavLink[data-active] {
-  color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 /* ==========================================================================
@@ -350,8 +350,15 @@
    light section has taken the dark hero's place. Doesn't apply to
    .homeHeaderSolid, which never sets [data-over-light] in the first
    place (see TRANSPARENT_OVER_DARK_HERO_PATHS in Header.tsx). */
+/* The light halo is a no-op on the plain white/light sections this state
+   was built for (Home/About) — it only becomes visible, and does its
+   job, over Services' hero video, where the brand-red text would
+   otherwise lose contrast against whatever darker footage is playing
+   under it at a given moment. Object-position can't fix that: it's a
+   moving video, not a static image, so no single crop stays safe. */
 .homeHeader[data-over-light] .homeLogo {
   color: var(--color-brand);
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(255, 255, 255, 0.9);
 }
 
 .homeLogo:hover {
@@ -426,5 +433,14 @@
 }
 
 .homeHeader[data-over-light] .homeNavLink {
+  color: var(--color-brand);
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+/* Services opts into brand-red nav links at all times, regardless of
+   scroll position — see BRAND_NAV_PATHS in Header.tsx. Scoped to
+   .homeNavLink only, so the JOANE CAMILLE wordmark (.homeLogo) keeps its
+   white color over the dark hero. */
+.homeHeader[data-brand-nav] .homeNavLink {
   color: var(--color-brand);
 }

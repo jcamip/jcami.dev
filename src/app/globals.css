@@ -7,7 +7,12 @@
   --color-primary-dark: #241c99;
   --color-primary-light: #7a71ff;
   --color-secondary: #0b0b14;
-  --color-accent: #c6ff3d;
+  /* A lighter tint of --color-brand at the same hue (0°) and saturation,
+     just raised in lightness — not a different color, used wherever a
+     dark section needs an accent that still reads clearly against
+     near-black (--color-brand itself is too close in value to
+     --color-secondary for that). */
+  --color-accent: #ff4d4d;
   --color-neutral-900: #0b0b14;
   --color-neutral-700: #3f3f4a;
   --color-neutral-500: #6b6b76;

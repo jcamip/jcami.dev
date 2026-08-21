@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import Button from "@/components/Button";
 import styles from "./ClosingCta.module.css";
 
@@ -11,7 +14,12 @@ const CALENDLY_URL = "https://calendly.com/joane-camille/30min";
 // home page — see the pathname check in Footer.tsx) with just location,
 // email, and copyright.
 export default function ClosingCta() {
+  const pathname = usePathname();
   const year = new Date().getFullYear();
+
+  // Services page has its own closing CTA section (see .cta in
+  // services.module.css) — skip this one there to avoid a duplicate.
+  if (pathname === "/services") return null;
 
   return (
     <section className={styles.closing} aria-label="Get in touch">

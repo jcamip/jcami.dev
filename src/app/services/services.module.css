@@ -8,92 +8,373 @@
    light version had. */
 .hero {
   position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
   margin-top: calc(-1 * var(--header-height));
   padding-block: calc(var(--header-height) + var(--space-24)) var(--space-12);
-  background: var(--color-secondary);
+  background: var(--color-neutral-0);
+  overflow: hidden;
+}
+
+/* Safari/iOS address-bar chrome makes 100vh taller than the actually
+   visible area, cutting the video short at the bottom on load — dvh
+   tracks the real visible viewport once supported, falling back to the
+   vh rule above on browsers that don't recognize it. */
+@supports (min-height: 100dvh) {
+  .hero {
+    min-height: 100dvh;
+  }
+}
+
+
+.heroVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateX(-4%);
+  z-index: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* Ramps all the way to fully opaque white by the bottom edge (not just
+     0.35) so the video's footage — including the drip shapes bleeding down
+     from the subject — dissolves into the next section's white background
+     instead of getting hard-cropped where the hero's box ends. */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 45%,
+    rgba(255, 255, 255, 0.35) 75%,
+    rgba(255, 255, 255, 1) 100%
+  );
 }
 
 .heroInner {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
   max-width: 760px;
-  color: var(--color-neutral-0);
+  /* Sits well below dead-center in the hero, and nudged right of the
+     container's auto-centered position. */
+  margin-top: var(--space-32);
+  transform: translateX(var(--space-24));
+  color: var(--color-neutral-900);
+  text-shadow: 0 2px 16px rgba(255, 255, 255, 0.85), 0 1px 3px rgba(255, 255, 255, 0.9);
 }
 
-/* Overrides the global .eyebrow's indigo text — same swap .process makes
-   below, for the same reason (dark background). */
+/* Overrides the global .eyebrow's indigo text and accent dot with the
+   header's brand red, so the "Services" label reads as the same color
+   as the header floating above it. */
 .heroInner :global(.eyebrow) {
-  color: var(--color-accent);
+  color: var(--color-brand);
+}
+
+.heroInner :global(.eyebrow)::before {
+  background: var(--color-brand);
 }
 
 .heroSubtitle {
   font-size: var(--text-body-lg);
-  color: var(--color-neutral-300);
+  color: var(--color-neutral-900);
 }
 
-/* Service list */
-.serviceItems {
+/* "Scroll to the next section" affordance — a plain anchor to the next
+   section's id (#offer on .list below) rather than a JS click handler, so
+   it rides on the same native smooth scroll (globals.css
+   html { scroll-behavior: smooth }) as every other in-page jump would.
+   Positioned absolute rather than centered via flex inside .heroInner:
+   that column stretches its children to its own full (760px-capped,
+   nudged-right) width, so a flex-centered child centers on THAT box, not
+   on the headline text sitting inside it — this instead centers directly
+   on where heroInner's own box actually renders (see the left: calc(...)
+   below), independent of how its children happen to be laid out. .hero's
+   own position: relative (its base rule, for the video/overlay) is what
+   makes it the containing block this resolves against. */
+.heroScrollButton {
+  position: absolute;
+  /* Required for this button to be clickable at all: .heroOverlay (its
+     sibling) has an explicit z-index: 1 and covers the full hero with no
+     pointer-events: none, so without an explicit z-index here (which
+     defaults to auto) the overlay silently wins the stacking order and
+     eats every click — the arrow still renders fine through the overlay's
+     translucent gradient, so this fails invisibly rather than obviously.
+     2 matches .heroInner's own level, one above the overlay. */
+  z-index: 2;
+  left: calc(50% + var(--space-24) - var(--space-6));
+  bottom: var(--space-12);
+  transform: translateX(-50%);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-18);
+  height: var(--space-18);
+  /* color: var(--color-neutral-900); */
+  color:black;
+  text-shadow: none;
+  transition: opacity 0.2s var(--ease-out);
 }
 
-.serviceItem {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-6);
-  padding-block: var(--space-12);
-  border-bottom: 1px solid var(--color-neutral-200);
+.heroScrollButton:hover,
+.heroScrollButton:focus-visible {
+  opacity: 0.7;
 }
 
-.serviceItem:first-child {
-  padding-top: 0;
-}
+/* Mobile: the video's -4% nudge and heroInner's +96px rightward nudge are
+   both tuned for the desktop crop/composition — on narrow viewports they
+   push the video's subject out of frame and shove the heading/subtitle far
+   enough right that the text runs off the edge of the screen instead of
+   wrapping (see the cut-off "supp[ort]"/"strategy t[o]" in the mobile
+   screenshot). Dropping both transforms and letting heroInner fill the
+   container's own left-aligned width keeps the full heading/subtitle
+   on-screen, matching the scroll button re-centered below it. */
+@media (max-width: 767px) {
+  .heroVideo {
+    transform: none;
+  }
 
-.serviceItem:last-child {
-  border-bottom: none;
-}
+  .heroInner {
+    max-width: 100%;
+    margin-top: var(--space-24);
+    transform: none;
+    align-items: flex-start;
+    text-align: left;
+  }
 
-@media (min-width: 768px) {
-  .serviceItem {
-    grid-template-columns: 1fr 1.4fr;
-    gap: var(--space-12);
+  .heroScrollButton {
+    left: 50%;
+    bottom: var(--space-6);
+  }
+
+  /* At mobile's narrower crop, the video's own footage (not a CSS border)
+     happens to end on a hard horizontal edge right where the hero meets
+     the next section — reading as an unwanted divider between the two.
+     Ramping the overlay the rest of the way to fully opaque white over
+     the last stretch fades that edge into the next section's own white
+     background instead of cutting to it. */
+  .heroOverlay {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 78%,
+      rgba(255, 255, 255, 1) 100%
+    );
   }
 }
 
-.serviceItemHead {
+/* Glitch/chromatic-aberration treatment on the two color copies behind
+   the solid black chevron (see page.tsx) — steps(1) rather than the
+   site's usual var(--ease-out) is what actually reads as "glitch" instead
+   of "bounce": the offset snaps instantly between positions with no
+   smooth interpolation between them. Several jump moments per cycle
+   (not just one brief blip) and offsets big enough to clearly separate
+   the color fringes from the black line — the first pass at this was too
+   subtle to register as anything at a glance. The two copies run the same
+   keyframes in opposite directions (animation-direction: reverse on the
+   red one) so they never jump the same way at the same time — mismatched
+   is the point. */
+.heroGlitchSilver,
+.heroGlitchRed {
+  opacity: 0.85;
+  animation: heroGlitch 1.8s steps(1) infinite;
+}
+
+.heroGlitchRed {
+  animation-direction: reverse;
+}
+
+@keyframes heroGlitch {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  8% {
+    transform: translate(-5px, 3px);
+  }
+  16% {
+    transform: translate(4px, -3px);
+  }
+  24% {
+    transform: translate(0, 0);
+  }
+  46% {
+    transform: translate(-4px, -4px);
+  }
+  54% {
+    transform: translate(5px, 4px);
+  }
+  62% {
+    transform: translate(0, 0);
+  }
+  80% {
+    transform: translate(-6px, 2px);
+  }
+  88% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Respects reduced-motion: the glitch jitter is decorative, so it's the
+   first thing to drop rather than something a motion-sensitive visitor
+   has to sit through. */
+@media (prefers-reduced-motion: reduce) {
+  .heroGlitchSilver,
+  .heroGlitchRed {
+    animation: none;
+  }
+}
+
+/* "What I Offer" eyebrow — same brand-red swap as the hero/process
+   eyebrows above, on both the text and the dot (rather than the global
+   accent color), so the whole label reads as one solid red mark. */
+.list :global(.eyebrow) {
+  color: var(--color-brand);
+}
+
+.list :global(.eyebrow)::before {
+  background: var(--color-brand);
+}
+
+.offerHeading {
+  max-width: 760px;
+}
+
+
+:global(:root) {
+  --cursor-splat-1: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' width='36' height='36'><g fill='%23a00000'><circle cx='4' cy='4' r='1.6'/><ellipse cx='10' cy='10' rx='4' ry='2.6' transform='rotate(40 10 10)'/><ellipse cx='16' cy='15' rx='3.2' ry='2' transform='rotate(40 16 15)'/><ellipse cx='21' cy='19' rx='2.4' ry='1.5' transform='rotate(40 21 19)'/><ellipse cx='25' cy='23' rx='1.6' ry='1' transform='rotate(40 25 23)'/><ellipse cx='28' cy='26' rx='1' ry='0.7' transform='rotate(40 28 26)'/><circle cx='14' cy='6' r='1.4'/><circle cx='19' cy='9' r='1'/><circle cx='6' cy='16' r='1.2'/><circle cx='32' cy='30' r='1'/></g></svg>");
+  --cursor-splat-2: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' width='36' height='36'><circle cx='4' cy='4' r='1.6' fill='%23a00000'/><path fill-rule='evenodd' fill='%23a00000' d='M10,6 C14,4 20,5 21,10 C24,9 26,13 23,16 C26,19 22,24 17,22 C18,26 12,27 11,22 C7,23 5,18 9,16 C6,14 6,9 10,6 Z M16,12 C18,12 19,14 18,16 C17,18 15,18 14,16 C13,14 14,12 16,12 Z'/><path d='M22,20 C26,24 24,30 20,33' stroke='%23a00000' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M6,10 C3,8 2,4 4,2' stroke='%23a00000' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M23,10 C28,8 31,11 29,15' stroke='%23a00000' stroke-width='1' fill='none' stroke-linecap='round'/><circle cx='32' cy='4' r='0.8' fill='%23a00000'/><circle cx='3' cy='24' r='2.2' fill='%23a00000'/><circle cx='30' cy='30' r='0.6' fill='%23a00000'/></svg>");
+  --cursor-splat-3: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' width='36' height='36'><g fill='%23a00000'><circle cx='4' cy='4' r='1.6'/><path d='M18,14 C20,14 22,16 22,18 C22,20 20,22 18,22 C16,22 14,20 14,18 C14,16 16,14 18,14 Z'/><circle cx='30' cy='6' r='2'/><circle cx='33' cy='19' r='1.8'/><circle cx='27' cy='30' r='2.2'/><circle cx='13' cy='32' r='1.6'/><circle cx='7' cy='22' r='1.3'/></g></svg>");
+  --cursor-splat-4: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' width='36' height='36'><g fill='%23a00000'><circle cx='4' cy='4' r='1.6'/><path d='M16,10 C19,10 22,13 22,16 C22,19 19,22 16,22 C13,22 10,19 10,16 C10,13 13,10 16,10 Z'/><path d='M16,10 L14,2 L18,9 Z'/><path d='M22,16 L31,14 L21,19 Z'/><path d='M16,22 L19,30 L14,21 Z'/><path d='M10,16 L2,19 L11,13 Z'/><path d='M20,12 L26,6 L19,14 Z'/><circle cx='30' cy='22' r='1.5'/><circle cx='6' cy='27' r='1.3'/><circle cx='28' cy='28' r='1'/></g></svg>");
+}
+
+.serviceItems {
+  margin-top: var(--space-12);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .serviceItems {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.serviceItem {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
   gap: var(--space-4);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-neutral-200);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out);
+}
+
+
+.serviceItem:nth-child(2) {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.serviceItem:nth-child(2)::before {
+  content: "ᜃ";
+  position: absolute;
+  z-index: -1;
+  right: -0.1em;
+  bottom: calc(-1 * var(--space-8));
+  font-family: var(--font-baybayin), var(--font-display);
+  font-size: 13rem;
+  line-height: 1;
+  color: rgba(160, 0, 0);
+  filter: url(#brushStroke);
+  transform: rotate(-3deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.serviceItem:nth-child(4) {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.serviceItem:nth-child(4)::before {
+  content: "ᜋᜒ";
+  position: absolute;
+  z-index: -1;
+  right: -0.1em;
+  bottom: calc(-1 * var(--space-8));
+  font-family: var(--font-baybayin), var(--font-display);
+  font-size: 13rem;
+  line-height: 1;
+  color: rgba(160, 0, 0, 0.4);
+  filter: url(#brushStroke);
+  transform: rotate(-3deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Same lift-on-hover language as .btn:hover (globals.css), scaled up for a
+   card-sized element, with the border stepping to brand red as the "you're
+   looking at the active one" cue. */
+.serviceItem:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-brand);
+}
+
+/* default fallback (not pointer) — these cards aren't links/buttons, just
+   a hover-only visual flourish, so the cursor shouldn't imply a click
+   target that isn't there. */
+.serviceItem:nth-child(1):hover {
+  cursor: var(--cursor-splat-1) 4 4, default;
+}
+
+.serviceItem:nth-child(2):hover {
+  cursor: var(--cursor-splat-2) 4 4, default;
+}
+
+.serviceItem:nth-child(3):hover {
+  cursor: var(--cursor-splat-3) 4 4, default;
+}
+
+.serviceItem:nth-child(4):hover {
+  cursor: var(--cursor-splat-4) 4 4, default;
 }
 
 .serviceIndex {
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--color-neutral-300);
+  color: var(--color-brand);
   font-size: var(--text-h3);
-}
-
-.serviceItemHead h2 {
-  color: var(--color-secondary);
 }
 
 .serviceItemBody {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-4);
+}
+
+.serviceItemBody h2 {
+  color: var(--color-secondary);
+  font-size: var(--text-h4);
 }
 
 .serviceItemBody > p {
   color: var(--color-neutral-500);
-  font-size: var(--text-body-lg);
-  max-width: 60ch;
 }
 
 .deliverables {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
+  margin-top: var(--space-2);
 }
 
 .deliverables li {
@@ -103,6 +384,18 @@
   background: var(--color-neutral-100);
   border-radius: var(--radius-full);
   padding: var(--space-2) var(--space-4);
+  transition: background-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+
+/* Pills pick up a faint brand-red tint once the card itself is hovered,
+   rather than each pill needing its own hover target — same "the whole
+   card is the interactive unit" idea as the card's own border/shadow
+   change above. rgba(160, 0, 0, ...) is --color-brand's own hex (#a00000)
+   spelled out as rgb, same approach the neutral/secondary shadows in
+   globals.css take for their own colors. */
+.serviceItem:hover .deliverables li {
+  background: rgba(160, 0, 0, 0.08);
+  color: var(--color-brand);
 }
 
 /* Process */
@@ -131,6 +424,7 @@
 }
 
 .processCard {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -138,6 +432,63 @@
   border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s var(--ease-out), background-color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out);
+}
+
+/* Same lift-on-hover language as .serviceItem above, keyed to this section's
+   own lighter accent instead of brand red — each dark/light section reaches
+   for whichever of the two colors it already uses for its numerals/eyebrow,
+   rather than sharing one hover color regardless of context. */
+.processCard:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--color-accent);
+}
+
+/* Same four splats as .serviceItem above, reused by position rather than
+   redefined, so "01 Discover"/"01 Brand Strategy" — both the first card
+   in their own grid — get the same shape. */
+.processCard:nth-child(1):hover {
+  cursor: var(--cursor-splat-1) 4 4, default;
+}
+
+.processCard:nth-child(2):hover {
+  cursor: var(--cursor-splat-2) 4 4, default;
+}
+
+.processCard:nth-child(3):hover {
+  cursor: var(--cursor-splat-3) 4 4, default;
+}
+
+.processCard:nth-child(4):hover {
+  cursor: var(--cursor-splat-4) 4 4, default;
+}
+
+/* Connects the four steps into one visible flow on the row layout — a
+   plain chevron drawn from two borders (no icon font/image, per the
+   performance habits) rather than a line, so it reads as "next step" and
+   not just a divider. Skipped below the 768px breakpoint where the grid
+   drops to a single column and "pointing right" would no longer point at
+   the next card. */
+@media (min-width: 768px) {
+  .processCard:not([data-last])::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    /* Centers the 8px chevron in the grid gap between this card and the
+       next: left: 100% lands it right at this card's own edge, then this
+       margin pushes it out by half the gap so it sits mid-way between the
+       two cards rather than flush against either one. */
+    margin-left: calc(var(--space-6) / 2);
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid var(--color-accent);
+    border-right: 2px solid var(--color-accent);
+    opacity: 0.5;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
 }
 
 .processStep {
@@ -158,7 +509,19 @@
 
 /* CTA */
 .cta {
+  position: relative;
   text-align: center;
+  background-image: url("/images/conversation-bg.png");
+  background-size: 100% auto;
+  background-position: 15% 29%;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 767px) {
+  .cta {
+    background-size: 280% auto;
+    background-position: center;
+  }
 }
 
 .ctaInner {
@@ -170,5 +533,17 @@
 
 .ctaInner p {
   color: var(--color-neutral-500);
-  max-width: 48ch;
+  max-width: 64ch;
+}
+
+
+@media (max-width: 767px) {
+  .ctaInner h2,
+  .ctaInner p {
+    text-shadow: 0 1px 12px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(255, 255, 255, 0.95);
+  }
+
+  .ctaInner p {
+    color: var(--color-neutral-900);
+  }
 }

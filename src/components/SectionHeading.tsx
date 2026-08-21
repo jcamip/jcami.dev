@@ -6,6 +6,7 @@ type SectionHeadingProps = {
   title: ReactNode;
   description?: ReactNode;
   align?: "left" | "center";
+  className?: string;
 };
 
 export default function SectionHeading({
@@ -13,9 +14,10 @@ export default function SectionHeading({
   title,
   description,
   align = "left",
+  className = "",
 }: SectionHeadingProps) {
   return (
-    <div className={styles.wrapper} data-align={align}>
+    <div className={`${styles.wrapper} ${className}`.trim()} data-align={align}>
       <span className="eyebrow">{eyebrow}</span>
       <h2 className={styles.title}>{title}</h2>
       {description ? <p className={styles.description}>{description}</p> : null}

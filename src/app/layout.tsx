@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Manrope } from "next/font/google";
+import { Space_Grotesk, Manrope, Noto_Sans_Tagalog, Cormorant_Garamond } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RouteScrollReset from "@/components/RouteScrollReset";
@@ -20,6 +20,31 @@ const manrope = Manrope({
   display: "swap",
 });
 
+// Only font in the Google Fonts catalog that ships Baybayin glyphs — needed
+// for the decorative Baybayin "ka" watermark on the Product Design card
+// (services.module.css .serviceItem:nth-child(2)::before). Space
+// Grotesk/Manrope have no glyphs in that script, so without this the
+// character would render as tofu/blank.
+const notoSansTagalog = Noto_Sans_Tagalog({
+  variable: "--font-baybayin",
+  subsets: ["tagalog"],
+  weight: "400",
+  display: "swap",
+});
+
+// Elegant italic serif used only for the "Capabilities"/"Expertise"/
+// "My Inspiration" captions in SkillsShowcase — a deliberate third face
+// (distinct from the site's display/body pairing above) matching that
+// section's editorial, poster-style reference rather than reusing
+// Space Grotesk/Manrope for a look neither is cut for.
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-serif-display",
+  subsets: ["latin"],
+  weight: ["500"],
+  style: ["italic"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Joane Camille · Digital Product Developer",
   description:
@@ -32,7 +57,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${manrope.variable}`}>
+    <html
+      lang="en"
+      className={`${spaceGrotesk.variable} ${manrope.variable} ${notoSansTagalog.variable} ${cormorantGaramond.variable}`}
+    >
       <body>
         <RouteScrollReset />
         <Header />
