@@ -1,0 +1,419 @@
+
+.pinWrap {
+  position: relative;
+  margin-top: calc(-1 * var(--header-height));
+}
+
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding-block: calc(var(--header-height) + var(--space-16)) var(--space-16);
+  padding-inline: var(--space-4);
+
+  overflow: hidden; 
+
+  --name-font-size: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+@media (min-width: 640px) {
+  .hero {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (min-width: 768px) {
+  .hero {
+    padding-inline: var(--space-8);
+  }
+}
+
+
+.pinWrap[data-js-ready] .hero {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    --name-font-size: clamp(1.5rem, 7.5vw, 2.5rem);
+  }
+}
+
+
+.nameHeading {
+  position: relative;
+  display: grid;
+  width: 100%;
+  margin: 0;
+}
+
+.nameUnified,
+.nameRow {
+  grid-area: 1 / 1;
+}
+
+
+.nameUnified {
+  position: relative;
+  justify-self: center;
+  align-self: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--name-font-size);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+@keyframes nameUnifiedDescend {
+  0% {
+    opacity: 0;
+    transform: translateY(-40vh) scale(0.3);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(-37vh) scale(0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(0.3);
+  }
+}
+
+/* Picks up exactly where the descend keyframes above leave off
+   (translateY(0) scale(0.3)) — position now held fixed, only scale moves,
+   so growth reads as happening in place once centered rather than mid-
+   flight. The chromatic-aberration glitch copies (::before/::after,
+   further down) burst for the same duration this plays. */
+@keyframes nameUnifiedGrowBurst {
+  0% {
+    transform: translateY(0) scale(0.3);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nameUnified {
+    transform-origin: center center;
+    transform: translateY(-40vh) scale(0.3);
+  }
+
+  .hero[data-phase="descend"] .nameUnified {
+    animation: nameUnifiedDescend 550ms var(--ease-out) forwards;
+  }
+
+  .hero[data-phase="grow"] .nameUnified {
+    opacity: 1;
+    transform: translateY(0) scale(0.3);
+    animation: nameUnifiedGrowBurst 420ms var(--ease-out) forwards;
+  }
+
+  .hero[data-phase="split"] .nameUnified,
+  .hero[data-phase="revealed"] .nameUnified {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+    transition: opacity 450ms var(--ease-out);
+  }
+}
+
+
+.nameUnified::before,
+.nameUnified::after {
+  content: attr(data-glitch);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.nameUnified::before {
+  color: var(--color-accent);
+}
+
+
+.nameUnified::after {
+  background: linear-gradient(135deg, #8a8a90 0%, #f2f2f4 25%, #ffffff 50%, #b4b4ba 75%, #6c6c72 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes nameGlitchBurst {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  8% {
+    transform: translate(-6px, 4px);
+    opacity: 0.85;
+  }
+  16% {
+    transform: translate(5px, -4px);
+    opacity: 0.85;
+  }
+  24% {
+    transform: translate(0, 0);
+    opacity: 0.85;
+  }
+  46% {
+    transform: translate(-5px, -4px);
+    opacity: 0.85;
+  }
+  54% {
+    transform: translate(6px, 4px);
+    opacity: 0.85;
+  }
+  62% {
+    transform: translate(0, 0);
+    opacity: 0.85;
+  }
+  80% {
+    transform: translate(-6px, 3px);
+    opacity: 0.85;
+  }
+  88% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+.nameRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: 100%;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nameRow {
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
+  }
+
+  .hero[data-phase="split"] .nameRow,
+  .hero[data-phase="revealed"] .nameRow {
+    opacity: 1;
+  }
+}
+
+.name {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--name-font-size);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+  white-space: nowrap;
+  /* Now a real link home (see AboutHero.tsx) — same hover fade every
+     other brand link on the site gets (.homeLogo, .homeNavLink in
+     Header.module.css). */
+  transition: opacity 0.2s var(--ease-out);
+}
+
+.name:hover {
+  opacity: 0.75;
+}
+
+.nameFirst {
+  justify-self: start;
+}
+
+.nameLast {
+  justify-self: end;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nameFirst,
+  .nameLast {
+    transition: transform 3600ms var(--ease-out);
+  }
+
+  .nameFirst {
+    transform: translateX(calc(50vw - 50% - 130px));
+  }
+
+  .nameLast {
+    transform: translateX(calc(-50vw + 50% + 130px));
+  }
+
+  .hero[data-phase="split"] .nameFirst,
+  .hero[data-phase="revealed"] .nameFirst,
+  .hero[data-phase="split"] .nameLast,
+  .hero[data-phase="revealed"] .nameLast {
+    transform: translateX(0);
+  }
+}
+
+
+.mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 34px;
+  height: auto;
+  display: block;
+}
+
+.description {
+  margin: 0;
+  text-align: center;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+  line-height: var(--leading-normal);
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .mark {
+    clip-path: inset(50% 0 50% 0);
+    transition: clip-path 500ms var(--ease-out);
+  }
+
+  .description {
+    clip-path: inset(50% 0 50% 0);
+    transition: clip-path 500ms var(--ease-out);
+  }
+
+  .hero[data-phase="revealed"] .mark,
+  .hero[data-phase="revealed"] .description {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+
+.bioViewport {
+  display: none;
+}
+
+.pinWrap[data-js-ready] .bioViewport {
+  display: block;
+  position: absolute;
+  inset: 0;
+  padding-inline: var(--space-4);
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .pinWrap[data-js-ready] .bioViewport {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (min-width: 768px) {
+  .pinWrap[data-js-ready] .bioViewport {
+    padding-inline: var(--space-8);
+  }
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .bioViewport {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1200ms var(--ease-out), transform 1200ms var(--ease-out);
+  }
+
+  .hero[data-phase="revealed"] .bioViewport {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 2s;
+  }
+}
+
+.bioInner {
+  max-width: 320px;
+  margin-left: 20px;
+  padding-top: 70vh;
+  padding-top: 70dvh;
+  padding-bottom: 20vh;
+}
+
+@media (min-width: 640px) {
+  .bioInner {
+    margin-left: 110px;
+  }
+}
+
+@media (min-width: 901px) {
+  .bioInner {
+    margin-left: 190px;
+  }
+}
+
+.bioParagraph {
+  margin: 0 0 var(--space-6) 0;
+  max-width: 360px;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  line-height: var(--leading-normal);
+  color: var(--color-neutral-900);
+}
+
+.bioParagraph:last-child {
+  margin-bottom: 0;
+}
+
+
+.bioSpacer {
+  display: block;
+}
+
+
+.bioMobile {
+  padding-inline: var(--space-4);
+  padding-block: var(--space-12) var(--space-16);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bioMobile {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1200ms var(--ease-out), transform 1200ms var(--ease-out);
+  }
+
+  .hero[data-phase="revealed"] ~ .bioMobile {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 2s;
+  }
+}
+
+@media (min-width: 640px) {
+  .bioMobile {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (min-width: 768px) {
+  .bioMobile {
+    padding-inline: var(--space-8);
+  }
+}
+
+.pinWrap[data-js-ready] .bioMobile {
+  display: none;
+}
