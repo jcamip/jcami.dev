@@ -3,6 +3,7 @@ import { Space_Grotesk, Manrope, Noto_Sans_Tagalog, Cormorant_Garamond } from "n
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RouteScrollReset from "@/components/RouteScrollReset";
+import Splashscreen from "@/components/Splashscreen";
 import "./globals.css";
 import ClosingCta from "@/components/ClosingCta";
 
@@ -62,10 +63,15 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${manrope.variable} ${notoSansTagalog.variable} ${cormorantGaramond.variable}`}
     >
       <body>
-        <RouteScrollReset />
-        <Header />
-        <main>{children}</main>
-        <ClosingCta />
+        <Splashscreen />
+        {/* Splashscreen marks this inert while it's covering the screen —
+            see its effect for why. */}
+        <div id="site-content">
+          <RouteScrollReset />
+          <Header />
+          <main>{children}</main>
+          <ClosingCta />
+        </div>
       </body>
     </html>
   );

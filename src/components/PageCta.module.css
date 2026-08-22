@@ -1,0 +1,38 @@
+.cta {
+  position: relative;
+  text-align: center;
+  background-image: url("/images/conversation-bg.png");
+  background-size: 100% auto;
+  background-position: 15% 29%;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 767px) {
+  .cta {
+    background-size: 280% auto;
+    background-position: center;
+  }
+}
+
+.ctaInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ctaInner p {
+  color: var(--color-neutral-500);
+  max-width: 64ch;
+}
+
+@media (max-width: 767px) {
+  .ctaInner h2,
+  .ctaInner p {
+    text-shadow: 0 1px 12px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(255, 255, 255, 0.95);
+  }
+
+  .ctaInner p {
+    color: var(--color-neutral-900);
+  }
+}

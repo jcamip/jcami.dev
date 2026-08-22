@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Button from "@/components/Button";
+import PageCta from "@/components/PageCta";
 import SectionHeading from "@/components/SectionHeading";
 import styles from "./about.module.css";
 
@@ -90,14 +90,12 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className={`section ${styles.cta}`}>
-        <div className={`container ${styles.ctaInner}`}>
-          <h2>Let&rsquo;s build something worth talking about.</h2>
-          <Button href="/connect" variant="primary">
-            Connect with me
-          </Button>
-        </div>
-      </section>
+      <PageCta
+        title="Let&rsquo;s build something worth talking about."
+        // description="Tell me about your project and I’ll help you figure out the right scope."
+        buttonLabel="Connect with me"
+        href="/connect"
+      />
     </>
   );
 }

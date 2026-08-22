@@ -102,14 +102,3 @@
 .timelineItem p {
   color: var(--color-neutral-700);
 }
-
-.cta {
-  text-align: center;
-}
-
-.ctaInner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-6);
-}

@@ -298,6 +298,27 @@
 }
 
 
+/* Same look as .cursorHint below (ProjectDetails' "Project Details" pill)
+   but scoped to .stack instead of .titleWrap, and layered above
+   .frameVisual's own hovered z-index bump (--visual-z: 20, set from
+   HOVERED_VISUAL_Z in ProjectMedia.tsx) rather than .cursorHint's plain
+   z-index: 3 — otherwise the hovered/zoomed mockup would paint over this
+   pill instead of sitting under it. */
+.mediaCursorHint {
+  position: absolute;
+  z-index: 21;
+  transform: translate(-50%, calc(-100% - 12px));
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-small);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .frame {
   position: absolute;
   top: 0;
@@ -306,6 +327,10 @@
   right: calc(var(--rest-spread, 0) * var(--fan-step) * -1);
   margin: auto;
   width: auto;
+  /* Pointer itself is replaced by .mediaCursorHint above (ProjectMedia.tsx
+     tracks the mouse position while over a frame), same treatment as
+     .detailsTitle's cursor: none below. */
+  cursor: none;
   /* Dialed back up from an earlier, more cramped pass at this
      (clamp(240px, 54vh, 620px)) — now that .details is pinned to the
      corner independent of .stack (see .details/.stack's own comments),
@@ -397,11 +422,13 @@
      trigger it. Hidden outright, with the title's own cursor reset back
      to a plain pointer instead of .detailsTitle's desktop cursor: none
      (which exists purely to get out of .cursorHint's way). */
-  .cursorHint {
+  .cursorHint,
+  .mediaCursorHint {
     display: none;
   }
 
-  .detailsTitle {
+  .detailsTitle,
+  .frame {
     cursor: pointer;
   }
 

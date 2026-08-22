@@ -17,9 +17,10 @@ export default function ClosingCta() {
   const pathname = usePathname();
   const year = new Date().getFullYear();
 
-  // Services page has its own closing CTA section (see .cta in
-  // services.module.css) — skip this one there to avoid a duplicate.
-  if (pathname === "/services") return null;
+  // Services and About pages each have their own closing CTA section (see
+  // .cta in services.module.css / about.module.css) — skip this one there
+  // to avoid a duplicate.
+  if (pathname === "/services" || pathname === "/about") return null;
 
   return (
     <section className={styles.closing} aria-label="Get in touch">

@@ -1,0 +1,97 @@
+/* Fixed, full-viewport wrapper. Purely a positioning context — it never
+   paints anything itself and never intercepts pointer events; the curtain
+   inside is what's actually seen, and #site-content's `inert` attribute
+   (toggled from Splashscreen.tsx) is what actually blocks interaction with
+   the real page while a transition is running. */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* The white "curtain". Rests off-screen below the viewport; sliding it to
+   translateY(0) covers the screen bottom-to-top, sliding it back to 100%
+   uncovers the (new) page top-to-bottom as it recedes. transform is the
+   only property animated (see performance habits in globals.css) — the
+   curtain's own size/position never changes, only where it sits. */
+.curtain {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-neutral-0);
+  transform: translateY(100%);
+  transition: transform 420ms var(--ease-out);
+  will-change: transform;
+}
+
+.covering {
+  transform: translateY(0);
+}
+
+/* The jcami mark, drawn piece by piece. Sized off the viewport rather than
+   a fixed px value so it centers and scales at any screen size; capped by
+   both width and height so it never overflows a short (landscape mobile)
+   viewport either. */
+.logo {
+  display: block;
+  width: min(26vw, 190px, 34vh);
+  height: auto;
+}
+
+/* Each piece traces itself as a set of stroke-only subpaths (dashoffset
+   animating from full length to 0, staggered per subpath — see
+   JCAMI_PIECES/drawDuration in Splashscreen.tsx). fill stays none here on
+   purpose: filling per-subpath would defeat fill-rule="evenodd" (each
+   subpath is its own <path>, and evenodd only cancels holes between
+   subpaths that share one path element) — the .fill path below handles
+   the solid fill instead, once the trace has finished. */
+.stroke {
+  fill: none;
+  stroke: var(--color-brand);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition-timing-function: linear, ease-in;
+}
+
+/* Solid fill for the whole piece (all subpaths combined, so evenodd holes
+   like the loop or the heart's center stay open), faded in once its trace
+   finishes. */
+.fill {
+  fill: var(--color-brand);
+  stroke: none;
+  transition-property: fill-opacity;
+  transition-timing-function: ease-in;
+}
+
+/* Thin background-colored line traced over the settled fill's own edges to
+   lighten the mark's visual weight — see ERASER_WIDTH_WORLD in
+   Splashscreen.tsx for why this is a plain vector stroke rather than a
+   filter. Sits on top of .fill in DOM order so it paints over it. */
+.eraser {
+  fill: none;
+  stroke: var(--color-neutral-0);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition-property: opacity;
+  transition-timing-function: ease-in;
+}
+
+/* "000%" -> "100%" counter, bottom-center of the curtain. Absolute within
+   .curtain (already the positioning context), so it's independent of the
+   mark's own size/position. tabular-nums keeps each digit the same width
+   as the count ticks up, so the "%" doesn't jitter sideways. */
+.percent {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-brand);
+}

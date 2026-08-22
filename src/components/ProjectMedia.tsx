@@ -123,6 +123,15 @@ export default function ProjectMedia({ title, images }: Props) {
   // regardless of which one was tapped.
   const activeIndex = hoveredIndex ?? tappedIndex;
 
+  // Replaces the pointer with a "Selected Works" label that follows it
+  // while over any mockup, mirroring ProjectDetails.tsx's cursorHint for
+  // its title button (see .frame's cursor: none and .mediaCursorHint in
+  // Projects.module.css). Tracked relative to stackRef rather than the
+  // viewport for the same reason as that one: .stack fades/rises via its
+  // own transform (see .stack[data-visible]), which would otherwise make
+  // it the containing block for a viewport-relative-coordinate tooltip.
+  const [cursorHint, setCursorHint] = useState<{ x: number; y: number } | null>(null);
+
   // Smooth one-time entrance the first time this project's stack scrolls
   // into view — not a repeating reveal, so the observer disconnects itself
   // once triggered.
@@ -274,8 +283,16 @@ export default function ProjectMedia({ title, images }: Props) {
             onPointerEnter={(event: PointerEvent) => {
               if (event.pointerType === "mouse") setHoveredIndex(index);
             }}
+            onPointerMove={(event: PointerEvent) => {
+              if (event.pointerType !== "mouse") return;
+              const rect = stackRef.current?.getBoundingClientRect();
+              if (!rect) return;
+              setCursorHint({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+            }}
             onPointerLeave={(event: PointerEvent) => {
-              if (event.pointerType === "mouse") setHoveredIndex(null);
+              if (event.pointerType !== "mouse") return;
+              setHoveredIndex(null);
+              setCursorHint(null);
             }}
             // Tapping *this specific* mockup is what pins activeIndex to
             // it (see the comment by tappedIndex above) — not a click
@@ -300,6 +317,16 @@ export default function ProjectMedia({ title, images }: Props) {
           </div>
         );
       })}
+
+      {cursorHint && (
+        <span
+          className={styles.mediaCursorHint}
+          style={{ left: cursorHint.x, top: cursorHint.y }}
+          aria-hidden="true"
+        >
+          Selected Works
+        </span>
+      )}
     </div>
   );
 }

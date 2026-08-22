@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import BackToTopButton from "@/components/BackToTopButton";
-import Button from "@/components/Button";
+import PageCta from "@/components/PageCta";
 import SectionHeading from "@/components/SectionHeading";
 import SkillsShowcase from "@/components/SkillsShowcase";
 import styles from "./services.module.css";
@@ -211,15 +211,12 @@ export default function ServicesPage() {
       />
 
 {/* fourth section:  */}
-      <section className={`section ${styles.cta}`}>
-        <div className={`container ${styles.ctaInner}`}>
-          <h2>Not sure which service fits?</h2>
-          <p>Tell me about your project and I&rsquo;ll help you figure out the right scope.</p>
-          <Button href="/connect" variant="brand">
-            Start the conversation
-          </Button>
-        </div>
-      </section>
+      <PageCta
+        title="Not sure which service fits?"
+        description="Tell me about your project and I’ll help you figure out the right scope."
+        buttonLabel="Start the conversation"
+        href="/connect"
+      />
 
       <BackToTopButton />
     </>

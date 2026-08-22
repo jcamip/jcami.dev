@@ -11,34 +11,12 @@ export default function Home() {
     <>
       <ScrollToTop />
 
-      {/* data-scroll-snap flags this as the home page for the html:has()
-          rule in globals.css that turns on full-viewport scroll-snap —
-          keeps that behavior off the About/Services/Connect pages without
-          any route-detection JS. */}
       <section
         className={styles.hero}
         aria-label="Joane Camille"
         data-scroll-snap="home"
         data-header-dark
       >
-        {/* <a href="#projects" className={styles.heroProjects}>
-          <span>Projects</span>
-          <svg
-            width="10"
-            height="10"
-            viewBox="0 0 14 14"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M2 5L7 10L12 5"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </a> */}
 
         <div className={styles.heroContent}>
           <p className={styles.heroEyebrow}>Strategy &middot; Design &middot; Digital Growth</p>
