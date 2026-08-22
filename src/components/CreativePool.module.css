@@ -1,0 +1,146 @@
+/* ==========================================================================
+   4. LAYOUT
+   ========================================================================== */
+.pool {
+  background: var(--color-neutral-0);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+  text-align: left;
+}
+
+/* ==========================================================================
+   5. COMPONENTS
+   ========================================================================== */
+/* Overrides the shared .eyebrow utility's default color (globals.css) just
+   for this section's heading, scoped via :global() so it doesn't bleed into
+   .eyebrow usage elsewhere on the site. */
+.heading :global(.eyebrow) {
+  color: var(--color-brand);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 560px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+@media (min-width: 560px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--color-neutral-300);
+  border-radius: 0;
+  background: transparent;
+  padding: var(--space-2) 0;
+  font-size: var(--text-body);
+  font-family: var(--font-body);
+  color: var(--color-brand);
+  text-align: left;
+  transition: border-color 0.2s var(--ease-out);
+}
+
+.form input::placeholder {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+  opacity: 1;
+}
+
+.form input:focus {
+  outline: none;
+  border-bottom-color: var(--color-brand);
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+}
+
+/* Scroll-triggered entrance (see the IntersectionObserver in
+   CreativePool.tsx) — the section's copy rises up and fades in the first
+   time it comes into view. The button is delayed slightly behind the
+   heading so the text reads as one sequence instead of popping in at once. */
+.heading,
+.submit,
+.success,
+.error {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+}
+
+.pool[data-visible] .heading {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pool[data-visible] .submit,
+.pool[data-visible] .success,
+.pool[data-visible] .error {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.15s;
+}
+
+.submit:disabled {
+  color: var(--color-neutral-500);
+  cursor: not-allowed;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.submit:hover:not(:disabled) .arrow {
+  transform: translate(2px, -2px);
+}
+
+.submit:hover:not(:disabled) {
+  color: var(--color-primary);
+}
+
+.success {
+  font-size: var(--text-body-lg);
+  color: var(--color-secondary);
+}
+
+.error {
+  color: var(--color-error);
+  font-size: var(--text-small);
+}
