@@ -21,18 +21,17 @@ const BIO_SETTLE_PX = 250;
 
 const bio = `Joane Camille has always moved between two worlds: one led by imagination, the other grounded in logic. Where they meet, scattered thoughts find structure, complex ideas become clear, and creativity takes tangible form.
 
-Creativity, for Cami, begins with connection—bringing fragments together, recognizing patterns, and shaping ideas as they unfold. She began coding at an early age, discovering a natural affinity for systems, problem-solving, and building things from the ground up. Studying Computer Engineering strengthened that foundation, while front-end development became the meeting point between technical thinking and creative expression—where structure becomes visual, ideas become interactive, and technology feels more human.
+A creative thinker by nature, Cami connects fragments, recognizes patterns, and shapes ideas as they unfold. She began coding at an early age and later studied Computer Engineering, building a strong foundation in systems and problem-solving. Front-end development became the meeting point between her technical and creative sides—where structure becomes visual, ideas become interactive, and technology feels more human.
 
-Cami’s professional journey began at Accenture as a Software Engineer. Since then, she has built software for the healthcare and events industries, progressing from Software Developer to her current role as a Senior Software Developer. Each chapter has strengthened her ability to navigate complex systems, organize moving parts, and transform ideas into thoughtful digital experiences.
+Cami began her professional journey as a Software Engineer at Accenture. Since then, she has built software for the healthcare and events industries, progressing from Software Developer to her current role as a Senior Software Developer. Along the way, she discovered that being a creator and an operator were never opposing qualities. Technical discipline amplifies her creativity, providing the clarity and structure needed to turn ideas into reality.
 
-Along the way, Cami discovered that being a creator and an operator were never opposing qualities. Technical discipline did not restrict creativity; it amplified it. Creative instinct opens new possibilities, while an operator’s mindset brings the clarity and structure needed to make them real. Together, they define how Cami thinks, builds, and creates.
+That perspective also shapes the way Cami thinks about AI. For her, the challenge is no longer simply adding an AI feature or chatbox to a product, but understanding what an interface should feel like when AI becomes an active participant—taking action and making decisions on someone’s behalf. When that happens, clarity becomes the foundation of trust. Cami is drawn to creating experiences that make AI’s actions understandable, preserve human agency, and give users a clear path forward—especially where established patterns do not yet exist.
 
-At the heart of Cami’s identity is ᜃᜋᜒ, the Baybayin rendering of Ka-mi. In this pre-colonial Philippine writing system, ᜃ represents ka, while ᜋᜒ represents mi. Together, the characters form Cami’s name and a personal emblem rooted in Filipino heritage.
+At the heart of Cami’s identity is ᜃᜋᜒ, the Baybayin rendering of Ka-mi. In this pre-colonial Philippine writing system, ᜃ represents ka, while ᜋᜒ represents mi. Together, they form Cami’s name and a personal emblem rooted in Filipino heritage.
 
-More than a visual signature, ᜃᜋᜒ represents the creative identity Cami brings to everything she builds. It reflects the way she approaches her work: understanding the structure behind an idea, then shaping it into something personal, relevant, and tangible. Just as Baybayin gives her name a visual form, code gives her imagination the structure it needs to become real.
+More than a visual signature, ᜃᜋᜒ represents the creative identity Cami brings to everything she builds. It reflects her approach: understanding the structure behind an idea, then shaping it into something personal, relevant, and tangible. Just as Baybayin gives her name a visual form, code gives her imagination a way to become real.
 
 Based in Dubai and working worldwide, Cami brings clarity to complexity and transforms ideas into experiences that feel thoughtful, purposeful, and distinctly human.
-
 `;
 
 const BIO_PARAGRAPHS = bio.trim().split(/\n{2,}/);

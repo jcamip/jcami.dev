@@ -5,7 +5,7 @@ type SectionHeadingProps = {
   eyebrow: string;
   title: ReactNode;
   description?: ReactNode;
-  align?: "left" | "center";
+  align?: "left" | "center" | "right";
   className?: string;
 };
 
