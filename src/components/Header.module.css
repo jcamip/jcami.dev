@@ -20,21 +20,14 @@
   width: 100%;
 }
 
-/* Groups the logo with the primary nav so both sit together on the
-   right — the toggle button (mobile) is the only other item in .bar.
-   Only ever rendered for pages outside OVERLAY_LAYOUT_PATHS in
-   Header.tsx — currently none, since every existing route uses the
-   overlay layout below, but kept as the plain solid-header fallback for
-   whatever page doesn't want it. */
+
 .brandNav {
   display: flex;
   align-items: center;
   gap: var(--space-24);
 }
 
-/* Logo — right side, next to the nav, links to home. Matches .navLink's
-   font-size and letter-spacing (.navLink sets neither, so none here
-   either) so the wordmark reads at the same scale as the menu beside it. */
+
 .logo {
   font-family: var(--font-display);
   font-weight: 700;
@@ -201,22 +194,6 @@
   color: var(--color-secondary);
 }
 
-/* ==========================================================================
-   Overlay header — fixed position, centered logo, vertical nav grouped
-   top-right; collapses to the same hamburger + full-screen overlay as the
-   plain header below 900px. Used by Header.tsx for every page whose hero
-   allows it (see OVERLAY_LAYOUT_PATHS) — originally home-only, since the
-   stack is compact enough to hold at every width regardless of what's
-   behind it.
-
-   Two tones share this layout:
-   - Transparent (default): white logo/nav floating over a full-bleed dark
-     hero, switching to brand red once a light section is behind it
-     instead — see [data-over-light] below. Home, About, Services.
-   - Solid (.homeHeaderSolid): opaque backdrop + permanently dark text,
-     for pages whose hero isn't uniformly dark behind where the nav sits
-     (Connect's right-hand form panel is light) — no scroll switch needed.
-   ========================================================================== */
 .homeHeader {
   position: fixed;
   inset-block-start: 0;
@@ -226,14 +203,7 @@
   padding-inline: var(--space-4);
 }
 
-/* Solid tone — same chrome as the plain .header (translucent white,
-   blurred) so the overlay layout stays legible without a dark backdrop
-   behind it. No border/shadow: the reference layout relies on the photo
-   beside it for contrast rather than a hard seam, so the header blends
-   into the white form panel exactly like it blends into the page
-   background in that reference. .homeLogo/.homeNavLink default to white
-   for the transparent tone, so both need the dark override here; the
-   hover opacity rules on each already apply regardless of color. */
+
 .homeHeaderSolid {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(12px);
@@ -245,22 +215,7 @@
   color: var(--color-brand);
 }
 
-/* Scrolls away with the page instead of staying pinned to the viewport —
-   see STATIC_OVERLAY_PATHS in Header.tsx for which routes opt into this.
-   Also pins the box to exactly --header-height instead of the auto height
-   .homeHeader gets from its padding + stacked nav links above 900px (that
-   auto height runs a few px taller than --header-height once 3 stacked
-   nav lines are in it) — main's padding-top and .split's min-height both
-   budget for exactly --header-height, so without this the header's real
-   bottom edge lands a few px into the image below it.
 
-   Deliberately NOT display:flex on .homeHeaderStatic itself — .homeBar
-   (below) relies on being a plain full-width block child to right-align
-   its content via its own justify-content: flex-end; making the parent a
-   flex container instead turns .homeBar into a shrink-to-fit flex item
-   that collapses to its content width and lands at the parent's
-   flex-start, i.e. the nav reads as pinned left. Centering happens one
-   level down instead, on .homeBar, which stays full-width either way. */
 .homeHeaderStatic {
   position: absolute;
   height: var(--header-height);
@@ -345,17 +300,7 @@
   /* opacity: 0.8; */
 }
 
-/* Switched on by Header.tsx once none of the current page's marked dark
-   sections ([data-header-dark]) are behind the header any more — i.e. a
-   light section has taken the dark hero's place. Doesn't apply to
-   .homeHeaderSolid, which never sets [data-over-light] in the first
-   place (see TRANSPARENT_OVER_DARK_HERO_PATHS in Header.tsx). */
-/* The light halo is a no-op on the plain white/light sections this state
-   was built for (Home/About) — it only becomes visible, and does its
-   job, over Services' hero video, where the brand-red text would
-   otherwise lose contrast against whatever darker footage is playing
-   under it at a given moment. Object-position can't fix that: it's a
-   moving video, not a static image, so no single crop stays safe. */
+
 .homeHeader[data-over-light] .homeLogo {
   color: var(--color-brand);
   text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8), 0 1px 2px rgba(255, 255, 255, 0.9);
@@ -363,6 +308,12 @@
 
 .homeLogo:hover {
   opacity: 0.6;
+}
+
+
+.homeLogoHidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .homeNav {

@@ -140,6 +140,8 @@ export default function Splashscreen() {
     await wait(EXIT_MS);
     if (!aliveRef.current) return;
 
+    window.dispatchEvent(new Event("jcami:splashdone"));
+
     siteContent?.removeAttribute("inert");
     document.body.style.overflow = "";
     runningRef.current = false;
@@ -159,10 +161,6 @@ export default function Splashscreen() {
     return () => cancelAnimationFrame(frameId);
   }, []);
 
-  // Every subsequent internal navigation: intercept the click, run the same
-  // sequence, and only push the route once the curtain has fully covered
-  // the screen — so the destination page swaps in unseen behind it instead
-  // of flashing into view the instant Next commits it.
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) return;
@@ -180,10 +178,6 @@ export default function Splashscreen() {
       if (url.origin !== window.location.origin) return;
       // Same page (including same-page hash links): let it behave natively.
       if (url.pathname === window.location.pathname && url.search === window.location.search) return;
-      // About is exempted from the transition (by request) — let that one
-      // navigate natively, splash-free, regardless of where it's clicked
-      // from.
-      if (url.pathname === "/about") return;
 
       event.preventDefault();
       playSplash(() => router.push(`${url.pathname}${url.search}${url.hash}`));
@@ -202,26 +196,11 @@ export default function Splashscreen() {
             const drawn = index < drawnCount;
             const fillDelay = drawn ? drawMs : 0;
             const totalLength = pieceLength(piece);
-            // fill-rule="evenodd" only punches a hole (the j's loop, the
-            // heart's open center) when the outer and inner subpaths share
-            // one <path> — so the fill/eraser below use every subpath
-            // joined back into one `d`, while the trace strokes render each
-            // subpath as its own separate, fill:none <path> (see the loop
-            // comment for why).
             const combinedD = piece.subpaths.map((s) => s.d).join(" ");
             let lengthBefore = 0;
             return (
               <g key={piece.name} transform={`translate(${piece.offset[0]} ${piece.offset[1]}) scale(${piece.scale})`}>
                 {piece.subpaths.map((subpath, subIndex) => {
-                  // Each subpath (e.g. the loop's hole, separate from the
-                  // letter's outer boundary) gets its own dasharray/length —
-                  // browsers reset the dash phase at every `M`, so sharing
-                  // one dashoffset across a multi-subpath `d` made later
-                  // subpaths reveal in lockstep with the first instead of
-                  // after it. Staggering each by its share of the piece's
-                  // total length keeps them reading as one sequential
-                  // stroke. fill is always none here — filling in is the
-                  // combined path below's job, so evenodd holes stay intact.
                   const subDelay = (drawMs * lengthBefore) / totalLength;
                   const subDuration = (drawMs * subpath.length) / totalLength;
                   lengthBefore += subpath.length;
@@ -234,13 +213,6 @@ export default function Splashscreen() {
                       style={{
                         strokeDasharray: subpath.length,
                         strokeDashoffset: drawn ? 0 : subpath.length,
-                        // Constant in *drawn* space (STROKE_WIDTH_WORLD /
-                        // scale) so pieces traced from a
-                        // different-resolution source (the "j") don't end up
-                        // with a visibly thinner or thicker outline than the
-                        // rest mid-stroke. Shrinks to 0 as the fill takes
-                        // over, so the trace stroke doesn't linger and bulk
-                        // out the settled shape.
                         strokeWidth: drawn ? 0 : STROKE_WIDTH_WORLD / piece.scale,
                         transitionDuration: `${subDuration}ms, ${FILL_MS}ms`,
                         transitionDelay: `${subDelay}ms, ${fillDelay}ms`,
