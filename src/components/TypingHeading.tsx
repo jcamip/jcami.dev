@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { SPLASH_DONE_EVENT, splashState } from "./Splashscreen";
 import styles from "./TypingHeading.module.css";
 
 type Segment = {
@@ -17,17 +18,16 @@ type TypingHeadingProps = {
   charDelayMs?: number;
   /** Delay before the first character appears. */
   startDelayMs?: number;
-  playOnceKey?: string;
 };
 
-const playedKeys = new Set<string>();
-
-
+// Retypes on every mount — including navigating to this page from another
+// route via next/link, which unmounts and remounts it — rather than only
+// once per session, so the hero always replays when a visitor actually
+// arrives at it.
 export default function TypingHeading({
   segments,
   charDelayMs = 32,
   startDelayMs = 300,
-  playOnceKey = "hero-typing-played",
 }: TypingHeadingProps) {
   const fullText = useMemo(() => segments.map((segment) => segment.text).join(""), [segments]);
   // Cumulative character offset each segment starts at, so the map below
@@ -48,11 +48,11 @@ export default function TypingHeading({
 
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const alreadyPlayed = playedKeys.has(playOnceKey);
 
     let frameId = 0;
+    let cancelled = false;
 
-    if (reduceMotion || alreadyPlayed) {
+    if (reduceMotion) {
       // Still deferred to a frame rather than called synchronously in the
       // effect body, so this stays a plain external-system subscription.
       frameId = requestAnimationFrame(() => {
@@ -62,27 +62,47 @@ export default function TypingHeading({
       return () => cancelAnimationFrame(frameId);
     }
 
-    const startTime = performance.now() + startDelayMs;
+    const runTyping = () => {
+      const startTime = performance.now() + startDelayMs;
 
-    const tick = (now: number) => {
-      const elapsed = now - startTime;
-      if (elapsed < 0) {
+      const tick = (now: number) => {
+        const elapsed = now - startTime;
+        if (elapsed < 0) {
+          frameId = requestAnimationFrame(tick);
+          return;
+        }
+        const count = Math.min(fullText.length, Math.floor(elapsed / charDelayMs) + 1);
+        setVisibleCount(count);
+        if (count >= fullText.length) {
+          setShowCursor(true);
+          return;
+        }
         frameId = requestAnimationFrame(tick);
-        return;
-      }
-      const count = Math.min(fullText.length, Math.floor(elapsed / charDelayMs) + 1);
-      setVisibleCount(count);
-      if (count >= fullText.length) {
-        setShowCursor(true);
-        playedKeys.add(playOnceKey);
-        return;
-      }
+      };
+
       frameId = requestAnimationFrame(tick);
     };
 
-    frameId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frameId);
-  }, [fullText, charDelayMs, startDelayMs, playOnceKey]);
+    // Don't start typing while the splash curtain is still covering the
+    // page — wait for it to finish receding. `splashState.covering` is a
+    // live flag (not a "has it ever fired" cache), so this correctly waits
+    // again on every navigation rather than only the first one.
+    if (!splashState.covering) {
+      runTyping();
+      return () => cancelAnimationFrame(frameId);
+    }
+
+    const handleSplashDone = () => {
+      if (!cancelled) runTyping();
+    };
+    window.addEventListener(SPLASH_DONE_EVENT, handleSplashDone, { once: true });
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frameId);
+      window.removeEventListener(SPLASH_DONE_EVENT, handleSplashDone);
+    };
+  }, [fullText, charDelayMs, startDelayMs]);
 
   return (
     <>

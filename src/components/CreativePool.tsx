@@ -116,7 +116,7 @@ export default function CreativePool() {
                   name="role"
                   type="text"
                   autoComplete="off"
-                  placeholder="Your role, e.g. photographer"
+                  placeholder="Your role, e.g. ai engineer"
                   value={role}
                   onChange={(event) => setRole(event.target.value)}
                   required

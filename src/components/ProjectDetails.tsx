@@ -32,24 +32,11 @@ function ArrowIcon() {
   );
 }
 
-// The year/title/description/CTA cluster pinned to the page's right edge
-// (see .details in Projects.module.css). Hovering or focusing the title
-// opens the description below it with a typing animation; unlike a normal
-// hover reveal, moving the pointer or focus away does NOT close it again
-// — only clicking the title does (clicking a second time reopens it).
-// Hover/focus can only turn it on, never off, so they're bound with
-// setIsOpen(true) rather than a toggle; the click handler is the only
-// thing that can turn it back off.
+
 export default function ProjectDetails({ title, year, description, href }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // On phones there's no hover, and requiring a tap just to read the
-  // description/find the link adds friction a desktop hover doesn't have
-  // — open it automatically instead. Checked once on mount rather than
-  // watched live: a phone being resized across this breakpoint mid-visit
-  // isn't a real scenario worth a resize listener for (same one-shot
-  // pattern as the reduced-motion check below). Still fully toggleable
-  // afterward via the title's own click handler, same as desktop.
+
   useEffect(() => {
     if (!window.matchMedia("(max-width: 640px)").matches) return;
     const frameId = requestAnimationFrame(() => setIsOpen(true));
@@ -60,15 +47,6 @@ export default function ProjectDetails({ title, year, description, href }: Props
   const isTyped = visibleCount >= description.length;
   const descriptionId = useId();
 
-  // Replaces the pointer with a "More Details" label that follows it while
-  // over the title, instead of the browser's default hand cursor (see
-  // .detailsTitle's cursor: none and .cursorHint in Projects.module.css).
-  // Positioned relative to titleWrapRef (not the viewport) so it tracks
-  // correctly regardless of .details' own transform: translateY(-50%) —
-  // a transform on an ancestor makes it the containing block for any
-  // position: fixed descendant, which would otherwise misplace a
-  // viewport-relative-coordinate tooltip against .details' own small box
-  // instead of the actual cursor position.
   const titleWrapRef = useRef<HTMLDivElement>(null);
   const [cursorHint, setCursorHint] = useState<{ x: number; y: number } | null>(null);
 
@@ -78,16 +56,6 @@ export default function ProjectDetails({ title, year, description, href }: Props
     setCursorHint({ x: event.clientX - rect.left, y: event.clientY - rect.top });
   };
 
-  // Types the description out character by character each time it opens;
-  // resets to empty on close so it replays from scratch next time, rather
-  // than TypingHeading's play-once-ever behavior — this is a repeatable
-  // reveal, not a one-time hero animation. The characters are still
-  // counted/revealed in normal reading order (0..N) — the right-to-left
-  // *look* comes entirely from .descriptionText's text-align: right in
-  // Projects.module.css, which keeps the newest character anchored at the
-  // fixed right edge and grows the revealed text leftward from there,
-  // rather than from reversing the string itself (which would render
-  // unreadable nonsense mid-type).
   useEffect(() => {
     let frameId = 0;
 

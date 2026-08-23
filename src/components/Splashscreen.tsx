@@ -8,6 +8,16 @@ import styles from "./Splashscreen.module.css";
 const VIEW_W = 1544;
 const VIEW_H = 1019;
 
+// Fired once the curtain has fully receded — on the initial load and again
+// on every internal navigation, since the curtain replays every time.
+// `splashState.covering` is live for the whole time in between (set true
+// synchronously before the curtain rises, false right when this fires), so
+// a consumer like TypingHeading.tsx can tell "is the curtain up right now"
+// apart from "has it ever finished" — the latter would go stale after the
+// very first cycle and never gate anything again.
+export const SPLASH_DONE_EVENT = "jcami:splashdone";
+export const splashState = { covering: false };
+
 const ENTER_MS = 420; // curtain rising, bottom -> covering (matches the CSS transition below)
 const REVEAL_START_MS = 130; // beat after the curtain covers, before the first stroke starts
 const STAGE_GAP_MS = 70; // pen-lift pause between one piece finishing and the next starting
@@ -99,6 +109,7 @@ export default function Splashscreen() {
   const playSplash = async (navigate?: () => void) => {
     if (runningRef.current) return;
     runningRef.current = true;
+    splashState.covering = true;
 
     // #site-content wraps Header/main/ClosingCta in layout.tsx. Marking it
     // inert keeps keyboard focus and screen readers off the real page for
@@ -140,7 +151,8 @@ export default function Splashscreen() {
     await wait(EXIT_MS);
     if (!aliveRef.current) return;
 
-    window.dispatchEvent(new Event("jcami:splashdone"));
+    splashState.covering = false;
+    window.dispatchEvent(new Event(SPLASH_DONE_EVENT));
 
     siteContent?.removeAttribute("inert");
     document.body.style.overflow = "";
@@ -151,6 +163,14 @@ export default function Splashscreen() {
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) return;
+
+    // Set synchronously here (not inside playSplash, which only actually
+    // runs a frame later below) so this is visible to other components'
+    // mount effects in the same commit — Splashscreen sits before
+    // #site-content in the tree, so its effects run first, and something
+    // like TypingHeading.tsx needs to see "covering" already true rather
+    // than a stale `false` from before the curtain has risen.
+    splashState.covering = true;
 
     // Deferred to a frame rather than called synchronously in the effect
     // body, so this stays a plain external-system subscription (same
