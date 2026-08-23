@@ -56,18 +56,18 @@ export const PROJECTS: Project[] = [
       },
       {
         type: "mobile",
-        src: "/projects/1bfs-mobile2.png",
+        src: "/projects/1bfs-mobile.png",
         alt: "Online ticketing platform shown on a phone",
         width: 580,
         height: 1252,
       },
-      {
-        type: "mobile",
-        src: "/projects/1bfs-mobile.png",
-        alt: " Online ticketing platform shown on a phone",
-        width: 580,
-        height: 1252,
-      },
+      // {
+      //   type: "mobile",
+      //   src: "/projects/1bfs-mobile.png",
+      //   alt: " Online ticketing platform shown on a phone",
+      //   width: 580,
+      //   height: 1252,
+      // },
     ],
   },
   {
