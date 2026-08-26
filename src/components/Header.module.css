@@ -13,6 +13,8 @@
 }
 
 .bar {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -141,9 +143,9 @@
 /* Mobile nav overlay */
 .mobileNav {
   position: fixed;
-  inset-block-start: var(--header-height);
-  inset-inline: 0;
-  bottom: 0;
+  inset: 0;
+  z-index: 0;
+  padding-block-start: var(--header-height);
   background: var(--color-neutral-0);
   display: flex;
   align-items: center;
@@ -240,6 +242,8 @@
 }
 
 .homeBar {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
