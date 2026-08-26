@@ -103,7 +103,8 @@ export default function Header() {
   };
 
   return (
-    <header
+    <>
+      <header
       className={
         useOverlayLayout
           ? `${styles.homeHeader} ${transparentOverDarkHero ? "" : styles.homeHeaderSolid} ${
@@ -167,34 +168,36 @@ export default function Header() {
         </button>
       </div>
 
-      <div
-        id="mobile-nav"
-        className={styles.mobileNav}
-        data-open={isMenuOpen || undefined}
-        aria-hidden={!isMenuOpen}
-      >
-        <ul className={styles.mobileNavList}>
-          {NAV_LINKS.map((link, index) => {
-            const isActive = pathname.startsWith(link.href);
-            return (
-              <li
-                key={link.href}
-                className={styles.mobileNavItem}
-                style={{ transitionDelay: isMenuOpen ? `${index * 40}ms` : "0ms" }}
-              >
-                <Link
-                  href={link.href}
-                  className={styles.mobileNavLink}
-                  data-active={isActive || undefined}
-                  tabIndex={isMenuOpen ? 0 : -1}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
     </header>
+
+    <div
+      id="mobile-nav"
+      className={styles.mobileNav}
+      data-open={isMenuOpen || undefined}
+      aria-hidden={!isMenuOpen}
+    >
+      <ul className={styles.mobileNavList}>
+        {NAV_LINKS.map((link, index) => {
+          const isActive = pathname.startsWith(link.href);
+          return (
+            <li
+              key={link.href}
+              className={styles.mobileNavItem}
+              style={{ transitionDelay: isMenuOpen ? `${index * 40}ms` : "0ms" }}
+            >
+              <Link
+                href={link.href}
+                className={styles.mobileNavLink}
+                data-active={isActive || undefined}
+                tabIndex={isMenuOpen ? 0 : -1}
+              >
+                {link.label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+    </>
   );
 }

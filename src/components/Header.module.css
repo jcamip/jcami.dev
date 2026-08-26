@@ -144,7 +144,7 @@
 .mobileNav {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 99;
   padding-block-start: var(--header-height);
   background: var(--color-neutral-0);
   display: flex;
@@ -277,16 +277,6 @@
   }
 }
 
-/* Matches .homeNavLink's font-size and letter-spacing so the wordmark
-   reads at the same scale as the menu beside it. Pulled out of the
-   .homeBrandNav flex flow and centered on .homeHeader (full viewport
-   width, its nearest positioned ancestor) — on the home page that also
-   lines it up with the monogram baked into the hero background, itself
-   horizontally centered at every breakpoint (see the background-position
-   comments on .hero in page.module.css); on every other overlay page it
-   just centers the wordmark at the top of the viewport. Staying fixed
-   with the rest of the header means it keeps that same on-screen spot
-   regardless of scroll position. */
 .homeLogo {
   position: absolute;
   top: 50%;
