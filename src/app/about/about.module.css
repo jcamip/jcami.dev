@@ -1,5 +1,9 @@
 
 
+.mobileWrap {
+  display: inline;
+}
+
 .valueGrid {
   margin-top: var(--space-12);
   grid-template-columns: 1fr;
@@ -8,6 +12,13 @@
 @media (min-width: 640px) {
   .valueGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .mobileWrap {
+    display: block;
+    margin-top: 0.12em;
   }
 }
 

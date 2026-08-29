@@ -62,9 +62,13 @@ const SERVICES = [
 ];
 
 export default function ServicesOffer() {
-    const [activeIndex, setActiveIndex] = useState(0);
+    const [activeIndex, setActiveIndex] = useState<number | null>(0);
     const [isVisible, setIsVisible] = useState(false);
     const sectionRef = useRef<HTMLElement | null>(null);
+
+    const handleToggle = (index: number) => {
+        setActiveIndex((currentIndex) => (currentIndex === index ? null : index));
+    };
 
     useEffect(() => {
         const node = sectionRef.current;
@@ -111,11 +115,11 @@ export default function ServicesOffer() {
                                     key={service.title}
                                     className={`${styles.serviceItem} ${isActive ? styles.active : ""} ${isVisible ? styles.visible : ""}`.trim()}
                                     tabIndex={0}
-                                    onClick={() => setActiveIndex(index)}
+                                    onClick={() => handleToggle(index)}
                                     onKeyDown={(event) => {
                                         if (event.key === "Enter" || event.key === " ") {
                                             event.preventDefault();
-                                            setActiveIndex(index);
+                                            handleToggle(index);
                                         }
                                     }}
                                 >
