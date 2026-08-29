@@ -60,8 +60,7 @@ export default function ContactForm() {
     return (
       <div className={styles.success} role="status">
         <h3>Message sent.</h3>
-        <p>Thanks for reaching out — I&rsquo;ll reply within one business day.</p>
-      </div>
+      <p>Thanks for sharing your project with me. I’ll review the details and follow up soon.</p>    </div>
     );
   }
 

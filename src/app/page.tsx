@@ -1,6 +1,5 @@
 import BackToTopButton from "@/components/BackToTopButton";
 import Button from "@/components/Button";
-import ClosingCta from "@/components/ClosingCta";
 import PartnersCarousel from "@/components/PartnersCarousel";
 import Projects from "@/components/Projects";
 import ScrollToTop from "@/components/ScrollToTop";
