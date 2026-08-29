@@ -1,10 +1,18 @@
 "use client";
 
+import { useEffect } from "react";
+import { getCalApi } from "@calcom/embed-react";
 import { usePathname } from "next/navigation";
 import Button from "@/components/Button";
 import styles from "./ClosingCta.module.css";
 
-const CALENDLY_URL = "https://calendly.com/joane-camille/30min";
+const CAL_NAMESPACE = "intro";
+const CAL_LINK = "joane-camille/intro";
+const CAL_CONFIG = JSON.stringify({
+  layout: "month_view",
+  useSlotsViewOnSmallScreen: true,
+  theme: "light",
+});
 
 // Final screen of the home page's scroll-snap sequence (see .closing in
 // ClosingCta.module.css) — sits directly after the last project in
@@ -16,6 +24,25 @@ const CALENDLY_URL = "https://calendly.com/joane-camille/30min";
 export default function ClosingCta() {
   const pathname = usePathname();
   const year = new Date().getFullYear();
+
+  useEffect(() => {
+    void (async () => {
+      const cal = await getCalApi({ namespace: CAL_NAMESPACE });
+      cal("ui", {
+        theme: "light",
+        cssVarsPerTheme: {
+          light: {
+            "cal-brand": "#a00000",
+          },
+          dark: {
+            "cal-brand": "#a00000",
+          },
+        },
+        hideEventTypeDetails: true,
+        layout: "month_view",
+      });
+    })();
+  }, []);
 
   // Services and About pages each have their own closing CTA section (see
   // .cta in services.module.css / about.module.css) — skip this one there
@@ -32,11 +59,12 @@ export default function ClosingCta() {
           can help. I work remotely, with clients everywhere.
         </p>
         <Button
-          href={CALENDLY_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+          type="button"
           variant="brand"
           className={styles.ctaButton}
+          data-cal-namespace={CAL_NAMESPACE}
+          data-cal-link={CAL_LINK}
+          data-cal-config={CAL_CONFIG}
         >
           <span>Schedule a Meeting</span>
           <svg
