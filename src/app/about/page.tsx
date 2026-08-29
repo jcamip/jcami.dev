@@ -56,8 +56,13 @@ export default function AboutPage() {
       </section> */}
 
 
+
       <PageCta
-        title={<>My story shaped my craft.<br />Now let’s make something meaningful from yours.</>}
+        title={
+          <>
+            My story shaped <span className={styles.mobileWrap}>my craft. <br /> Now let’s make something meaningful from yours.</span>
+          </>
+        }
         // description="Tell me about your project and I’ll help you figure out the right scope."
         buttonLabel="Tell Cami about your project"
         href="/connect"
