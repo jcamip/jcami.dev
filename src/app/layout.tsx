@@ -50,6 +50,19 @@ export const metadata: Metadata = {
   title: "Joane Camille · Digital Product Developer",
   description:
     "Joane Camille partners with ambitious brands to design, build, and scale digital products that perform.",
+  openGraph: {
+    title: "Joane Camille · Digital Product Developer",
+    description:
+      "Joane Camille partners with ambitious brands to design, build, and scale digital products that perform.",
+    images: ["/images/bg.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Joane Camille · Digital Product Developer",
+    description:
+      "Joane Camille partners with ambitious brands to design, build, and scale digital products that perform.",
+    images: ["/images/bg.png"],
+  },
 };
 
 export default function RootLayout({
