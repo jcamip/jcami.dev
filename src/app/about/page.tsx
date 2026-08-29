@@ -57,9 +57,9 @@ export default function AboutPage() {
 
 
       <PageCta
-        title="Let&rsquo;s build something worth talking about."
+        title={<>My story shaped my craft.<br />Now let’s make something meaningful from yours.</>}
         // description="Tell me about your project and I’ll help you figure out the right scope."
-        buttonLabel="Connect with me"
+        buttonLabel="Tell Cami about your project"
         href="/connect"
       />
     </>

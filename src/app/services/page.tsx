@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import BackToTopButton from "@/components/BackToTopButton";
 import PageCta from "@/components/PageCta";
-import SectionHeading from "@/components/SectionHeading";
 import SkillsShowcase from "@/components/SkillsShowcase";
+
 import styles from "./services.module.css";
+import ServicesOffer from "./ServicesOffer";
 
 export const metadata: Metadata = {
   title: "Services — Joane Camille",
@@ -11,52 +12,7 @@ export const metadata: Metadata = {
     "Brand strategy, product design, web development, and growth consulting services offered by Joane Camille.",
 };
 
-const SERVICES = [
-  {
-    title: "Brand Strategy",
-    description:
-      "Build a distinctive brand with clear positioning, compelling messaging, and a cohesive identity designed to earn trust and stand out.",
-    deliverables: [
-      "Brand positioning",
-      "Messaging framework",
-      "Visual identity",
-      "Voice & tone guidelines",
-    ],
-  },
-  {
-    title: "Product Design",
-    description:
-      "Turn complex ideas into intuitive digital experiences through thoughtful UX, polished interfaces, and scalable design systems.",
-    deliverables: [
-      "User research & journeys",
-      "User flows & wireframes",
-      "High-fidelity UI",
-      "Design systems",
-    ],
-  },
-  {
-    title: "Web Development",
-    description:
-      "Launch fast, accessible, and reliable websites built with modern technology—optimized for every screen and ready to scale.",
-    deliverables: [
-      "Responsive development",
-      "CMS integration",
-      "Performance optimization",
-      "Accessibility testing",
-    ],
-  },
-  {
-    title: "Growth Consulting",
-    description:
-      "Identify opportunities, remove conversion barriers, and turn customer insights into a focused roadmap for sustainable growth.",
-    deliverables: [
-      "SEO",
-      "Conversion optimization",
-      "Analytics & tracking",
-      "Prioritized growth roadmap",
-    ],
-  },
-];
+
 
 const SKILL_GROUPS = [
   {
@@ -64,11 +20,12 @@ const SKILL_GROUPS = [
     items: [
       "Web Development",
       "Ecommerce",
+      "DevOps & Hosting",
       "AI",
       "Product Design",
       "Brand Strategy",
       "Design Systems",
-      "Social Media Content",
+      "Headless Shopify",
     ],
   },
   {
@@ -174,32 +131,7 @@ export default function ServicesPage() {
       </section>
 
       {/* second section: */}
-      <section id="offer" className={`section ${styles.list}`}>
-        <div className="container">
-          <SectionHeading
-            eyebrow="What I Offer"
-            title="Four ways to work together"
-            description="Choose a focused service or combine them into a seamless, end-to-end engagement tailored to your goals and the support you need."
-            className={styles.offerHeading}
-          />
-          <div className={`grid ${styles.serviceItems}`}>
-            {SERVICES.map((service, index) => (
-              <article key={service.title} className={styles.serviceItem}>
-                <span className={styles.serviceIndex}>{String(index + 1).padStart(2, "0")}</span>
-                <div className={styles.serviceItemBody}>
-                  <h2>{service.title}</h2>
-                  <p>{service.description}</p>
-                  <ul className={styles.deliverables}>
-                    {service.deliverables.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ServicesOffer />
 
       {/* third section: */}
       <SkillsShowcase

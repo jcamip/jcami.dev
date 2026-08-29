@@ -115,7 +115,7 @@ export default function ContactForm() {
       </div>
 
       <button type="submit" className={styles.submit} disabled={status === "submitting"}>
-        <span>{status === "submitting" ? "Sending" : "Submit form"}</span>
+        <span>{status === "submitting" ? "Sending" : "Submit"}</span>
         <span aria-hidden className={styles.arrow}>
           ↗
         </span>
