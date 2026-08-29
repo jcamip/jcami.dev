@@ -129,9 +129,7 @@ export default function CreativePool() {
               disabled={status === "submitting" || !canSubmit}
             >
               <span>{status === "submitting" ? "Joining" : "Join the pool"}</span>
-              <span aria-hidden className={styles.arrow}>
-                ↗
-              </span>
+    
             </button>
           </form>
         )}

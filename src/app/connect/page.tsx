@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import BackToTopButton from "@/components/BackToTopButton";
 import ContactForm from "@/components/ContactForm";
 import CreativePool from "@/components/CreativePool";
 import styles from "./connect.module.css";
@@ -36,6 +37,7 @@ export default function ConnectPage() {
       </section>
 
       <CreativePool />
+      <BackToTopButton />
     </>
   );
 }

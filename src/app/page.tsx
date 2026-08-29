@@ -1,3 +1,4 @@
+import BackToTopButton from "@/components/BackToTopButton";
 import Button from "@/components/Button";
 import ClosingCta from "@/components/ClosingCta";
 import PartnersCarousel from "@/components/PartnersCarousel";
@@ -67,6 +68,7 @@ export default function Home() {
       </section>
 
       <Projects />
+      <BackToTopButton />
     </>
   );
 }

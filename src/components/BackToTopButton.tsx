@@ -33,43 +33,53 @@ export default function BackToTopButton() {
   };
 
   return (
-    <button
-      type="button"
-      className={`${styles.backToTop} ${isVisible ? styles.visible : ""}`}
-      onClick={handleClick}
-      aria-label="Back to top"
-      aria-hidden={!isVisible}
-      tabIndex={isVisible ? 0 : -1}
-    >
-      {/* url(#silverGradient) resolves against the hidden <svg> defs block
-          rendered once in services/page.tsx (shared with the hero's
-          scroll-down chevron) — this component only renders anywhere that
-          def is present in the DOM. */}
-      <svg width="20" height="20" viewBox="0 0 24 18" fill="none" aria-hidden="true">
-        <path
-          className={styles.backToTopGlitchSilver}
-          d="M6 13 L12 6 L18 13"
-          stroke="url(#silverGradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          className={styles.backToTopGlitchRed}
-          d="M6 13 L12 6 L18 13"
-          stroke="var(--color-brand)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M6 13 L12 6 L18 13"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+    <>
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="silverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8a8a90" />
+            <stop offset="25%" stopColor="#f2f2f4" />
+            <stop offset="50%" stopColor="#ffffff" />
+            <stop offset="75%" stopColor="#b4b4ba" />
+            <stop offset="100%" stopColor="#6c6c72" />
+          </linearGradient>
+        </defs>
       </svg>
-    </button>
+
+      <button
+        type="button"
+        className={`${styles.backToTop} ${isVisible ? styles.visible : ""}`}
+        onClick={handleClick}
+        aria-label="Back to top"
+        aria-hidden={!isVisible}
+        tabIndex={isVisible ? 0 : -1}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 18" fill="none" aria-hidden="true">
+          <path
+            className={styles.backToTopGlitchSilver}
+            d="M6 13 L12 6 L18 13"
+            stroke="url(#silverGradient)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            className={styles.backToTopGlitchRed}
+            d="M6 13 L12 6 L18 13"
+            stroke="var(--color-brand)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M6 13 L12 6 L18 13"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+    </>
   );
 }
