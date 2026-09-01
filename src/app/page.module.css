@@ -255,4 +255,5 @@
 .heroChrome {
   white-space: nowrap;
   color: #000000;
+  display: inline-block;
 }

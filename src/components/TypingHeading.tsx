@@ -109,8 +109,16 @@ export default function TypingHeading({
       <span aria-hidden="true">
         {segments.map((segment, index) => {
           const visible = Math.max(0, Math.min(segment.text.length, visibleCount - segmentStarts[index]));
+          const isSegmentComplete = visible >= segment.text.length;
+          const className = [
+            segment.className,
+            isSegmentComplete && segment.className ? styles.focusIn : null,
+          ]
+            .filter(Boolean)
+            .join(" ");
+
           return (
-            <span key={index} className={segment.className}>
+            <span key={index} className={className || undefined}>
               {segment.text.slice(0, visible)}
             </span>
           );

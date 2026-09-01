@@ -54,15 +54,14 @@ export default function Home() {
           <h1 className={styles.heroHeading}>
             <TypingHeading
               segments={[
-                { text: "Building brands that " },
-                { text: "move markets", className: styles.heroChrome },
-                { text: ", not just pixels." },
+                { text: "Building brands people don't just see. " },
+                { text: "They feel.", className: styles.heroChrome },
               ]}
             />
           </h1>
           <p className={styles.heroSubheading}>
-            I turn your ideas into fully developed websites. Handling everything from the visual
-            direction to launch. <br/>Scroll to explore selected projects.
+            I turn ideas into digital experiences with intention—shaping everything from visual direction to development and launch.
+             <br />Scroll to explore selected projects.
           </p>
           <div className={styles.heroCta}>
             <Button
