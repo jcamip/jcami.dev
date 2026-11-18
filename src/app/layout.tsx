@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Manrope, Noto_Sans_Tagalog, Cormorant_Garamond } from "next/font/google";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import RouteScrollReset from "@/components/RouteScrollReset";
 import Splashscreen from "@/components/Splashscreen";
+import { absoluteUrl, siteConfig } from "@/config/site";
+import { siteIdentityJsonLd } from "@/lib/seo";
 import "./globals.css";
 import ClosingCta from "@/components/ClosingCta";
 
@@ -47,21 +49,59 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Joane Camille · Digital Product Developer",
-  description:
-    "Joane Camille partners with ambitious brands to design, build, and scale digital products that perform.",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.title,
+    template: `%s · ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.name, url: absoluteUrl("/about") }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  alternates: {
+    canonical: absoluteUrl("/"),
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
-    title: "Joane Camille · Digital Product Developer",
-    description:
-      "Joane Camille partners with ambitious brands to design, build, and scale digital products that perform.",
-    images: ["/images/bg.png"],
+    type: "website",
+    locale: siteConfig.locale,
+    url: absoluteUrl("/"),
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [
+      {
+        url: absoluteUrl(siteConfig.ogImage.path),
+        width: siteConfig.ogImage.width,
+        height: siteConfig.ogImage.height,
+        alt: siteConfig.ogImage.alt,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Joane Camille · Digital Product Developer",
-    description:
-      "Joane Camille partners with ambitious brands to design, build, and scale digital products that perform.",
-    images: ["/images/bg.png"],
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [absoluteUrl(siteConfig.ogImage.path)],
+  },
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.BING_SITE_VERIFICATION
+      ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
+      : {}),
   },
 };
 
@@ -76,6 +116,12 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${manrope.variable} ${notoSansTagalog.variable} ${cormorantGaramond.variable}`}
     >
       <body>
+        <JsonLd data={siteIdentityJsonLd()} />
+        {/* The curtain is server-rendered covering the page; without JS it
+            would never lift, so hide it outright. */}
+        <noscript>
+          <style>{"[data-splash]{display:none}"}</style>
+        </noscript>
         <Splashscreen />
         {/* Splashscreen marks this inert while it's covering the screen —
             see its effect for why. */}

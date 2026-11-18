@@ -87,7 +87,11 @@ export default function ProjectDetails({ title, year, description, href }: Props
 
   return (
     <div className={styles.details}>
-      {year && <span className={styles.year}>{year}</span>}
+      {year && (
+        <time className={styles.year} dateTime={String(year)}>
+          {year}
+        </time>
+      )}
 
       <div
         ref={titleWrapRef}
@@ -125,10 +129,14 @@ export default function ProjectDetails({ title, year, description, href }: Props
           data-open={isOpen || undefined}
           aria-hidden={!isOpen}
         >
-          <p className={styles.descriptionText}>{description.slice(0, visibleCount)}</p>
+          <p className={styles.descriptionText}>
+            <span aria-hidden="true">{description.slice(0, visibleCount)}</span>
+            <span className="visuallyHidden">{description}</span>
+          </p>
           {href && (
             <a
               href={href}
+              aria-label={`View the ${title} website`}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.cta}

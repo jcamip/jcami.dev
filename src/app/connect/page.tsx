@@ -3,12 +3,11 @@ import Image from "next/image";
 import BackToTopButton from "@/components/BackToTopButton";
 import ContactForm from "@/components/ContactForm";
 import CreativePool from "@/components/CreativePool";
+import { getPublicRoute } from "@/config/site";
+import { createPageMetadata } from "@/lib/seo";
 import styles from "./connect.module.css";
 
-export const metadata: Metadata = {
-  title: "Connect — Joane Camille",
-  description: "Get in touch with Joane Camille to start a strategy, design, or development project.",
-};
+export const metadata: Metadata = createPageMetadata(getPublicRoute("/connect"));
 
 export default function ConnectPage() {
   return (

@@ -121,7 +121,7 @@ export default function ServicesOffer() {
                                 >
                                     <div className={styles.serviceItemHeader}>
                                         <span className={styles.serviceIndex}>{String(index + 1).padStart(2, "0")}</span>
-                                        <h2>{service.title}</h2>
+                                        <h3 className={styles.serviceTitle}>{service.title}</h3>
                                     </div>
 
                                     <div className={styles.serviceItemBody}>

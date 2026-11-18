@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { getCalApi } from "@calcom/embed-react";
 import { usePathname } from "next/navigation";
 import Button from "@/components/Button";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import styles from "./ClosingCta.module.css";
 
 const CAL_NAMESPACE = "intro";
@@ -84,9 +85,30 @@ export default function ClosingCta() {
             />
           </svg>
         </Button>
+        <p className={styles.note}>
+          <svg
+            className={styles.noteIcon}
+            width="12"
+            height="12"
+            viewBox="0 0 20 20"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle cx="10" cy="10" r="8.25" stroke="currentColor" strokeWidth="1.5" />
+            <path
+              d="M6.5 10.25L8.75 12.5L13.5 7.75"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          UAE-registered business &middot; Available for international projects
+        </p>
       </div>
 
       <div className={`container ${styles.meta}`}>
+        <WhatsAppButton className={styles.whatsapp} />
         <span className={styles.location}>Dubai, UAE</span>
         <a href="mailto:hello@jcami.dev" className={styles.email}>
           hello@jcami.dev

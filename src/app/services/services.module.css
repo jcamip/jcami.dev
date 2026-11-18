@@ -344,6 +344,10 @@
   gap: var(--space-4);
 }
 
+.serviceTitle {
+  font-size: var(--text-h2);
+}
+
 .serviceItem:nth-child(2) {
   position: relative;
   overflow: hidden;

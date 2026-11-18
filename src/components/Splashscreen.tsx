@@ -75,7 +75,9 @@ const totalRevealMs = (fast: boolean) =>
 
 export default function Splashscreen() {
   const router = useRouter();
-  const [covering, setCovering] = useState(false);
+  // Starts covering so the server-rendered HTML paints as a plain white
+  // screen — otherwise the page underneath flashes before hydration.
+  const [covering, setCovering] = useState(true);
   const [drawnCount, setDrawnCount] = useState(0);
   const [percent, setPercent] = useState(0);
   // Whether this run is the sped-up variant — decided once per playSplash
@@ -106,7 +108,7 @@ export default function Splashscreen() {
     requestAnimationFrame(tick);
   };
 
-  const playSplash = async (navigate?: () => void) => {
+  const playSplash = async (navigate?: () => void, alreadyCovering = false) => {
     if (runningRef.current) return;
     runningRef.current = true;
     splashState.covering = true;
@@ -127,9 +129,11 @@ export default function Splashscreen() {
 
     setDrawnCount(0);
     setPercent(0);
-    setCovering(true);
-    await wait(ENTER_MS);
-    if (!aliveRef.current) return;
+    if (!alreadyCovering) {
+      setCovering(true);
+      await wait(ENTER_MS);
+      if (!aliveRef.current) return;
+    }
 
     // The curtain is now fully covering the screen — safe to actually
     // navigate; the swap happens unseen behind it.
@@ -162,7 +166,11 @@ export default function Splashscreen() {
   // Initial page load: same sequence, no navigation to perform.
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
+    if (reduceMotion) {
+      // Curtain was server-rendered covering; drop it without animating.
+      const frameId = requestAnimationFrame(() => setCovering(false));
+      return () => cancelAnimationFrame(frameId);
+    }
 
     // Set synchronously here (not inside playSplash, which only actually
     // runs a frame later below) so this is visible to other components'
@@ -176,7 +184,7 @@ export default function Splashscreen() {
     // body, so this stays a plain external-system subscription (same
     // pattern as TypingHeading.tsx/Header.tsx).
     const frameId = requestAnimationFrame(() => {
-      playSplash();
+      playSplash(undefined, true);
     });
     return () => cancelAnimationFrame(frameId);
   }, []);
@@ -208,7 +216,7 @@ export default function Splashscreen() {
   }, [router]);
 
   return (
-    <div className={styles.splash} role="status" aria-live="polite">
+    <div className={styles.splash} data-splash role="status" aria-live="polite">
       <div className={covering ? `${styles.curtain} ${styles.covering}` : styles.curtain}>
         <svg viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} className={styles.logo} aria-hidden="true">
           {JCAMI_PIECES.map((piece, index) => {

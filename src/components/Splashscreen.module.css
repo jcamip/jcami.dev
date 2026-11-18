@@ -95,3 +95,9 @@
   font-variant-numeric: tabular-nums;
   color: var(--color-brand);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .curtain {
+    transition: none;
+  }
+}

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Patronus, { createPatronusCast, describePatronus, type PatronusCast, type PatronusKind } from "./Patronus";
 import styles from "./AboutHero.module.css";
 
 type Phase = "idle" | "descend" | "grow" | "split" | "revealed";
@@ -25,6 +26,8 @@ A creative thinker by nature, Cami connects fragments, recognizes patterns, and 
 
 Cami began her professional journey as a Software Engineer at Accenture. Since then, she has built software for the healthcare and events industries, progressing from Software Developer to her current role as a Senior Software Developer. Along the way, she discovered that being a creator and an operator were never opposing qualities. Technical discipline amplifies her creativity, providing the clarity and structure needed to turn ideas into reality.
 
+Cami's work has also evolved into entrepreneurship through PALCANA, a UAE-registered company licensed for computer systems and software design. Through PALCANA, she brings her technical expertise and creative perspective into independent client engagements, developing purposeful digital solutions for businesses and brands.
+
 That perspective also shapes the way Cami thinks about AI. For her, the challenge is no longer simply adding an AI feature or chatbox to a product, but understanding what an interface should feel like when AI becomes an active participant—taking action and making decisions on someone’s behalf. When that happens, clarity becomes the foundation of trust. Cami is drawn to creating experiences that make AI’s actions understandable, preserve human agency, and give users a clear path forward—especially where established patterns do not yet exist.
 
 At the heart of Cami’s identity is ᜃᜋᜒ, the Baybayin rendering of Ka-mi. In this pre-colonial Philippine writing system, ᜃ represents ka, while ᜋᜒ represents mi. Together, they form Cami’s name and a personal emblem rooted in Filipino heritage.
@@ -36,6 +39,27 @@ Based in Dubai and working worldwide, Cami brings clarity to complexity and tran
 
 const BIO_PARAGRAPHS = bio.trim().split(/\n{2,}/);
 
+const PALCANA_URL = "https://palcana.com";
+
+function renderBioParagraph(paragraph: string) {
+  const [before, ...rest] = paragraph.split("PALCANA");
+  if (rest.length === 0) return paragraph;
+  return (
+    <>
+      {before}
+      <a
+        href={PALCANA_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={styles.bioLink}
+      >
+        PALCANA
+      </a>
+      {rest.join("PALCANA")}
+    </>
+  );
+}
+
 
 export default function AboutHero() {
   const [phase, setPhase] = useState<Phase>("idle");
@@ -44,6 +68,18 @@ export default function AboutHero() {
   const bioViewportRef = useRef<HTMLDivElement>(null);
   const bioInnerRef = useRef<HTMLDivElement>(null);
   const [scrollRange, setScrollRange] = useState(0);
+  const [patronus, setPatronus] = useState<PatronusCast | null>(null);
+  const lastPatronusRef = useRef<PatronusKind | undefined>(undefined);
+  const [announcement, setAnnouncement] = useState("");
+
+  const castPatronus = () => {
+    const cast = createPatronusCast(lastPatronusRef.current);
+    lastPatronusRef.current = cast.kind;
+    setPatronus(cast);
+    setAnnouncement(`Expecto Patronum! ${describePatronus(cast.kind)} appears.`);
+  };
+
+  const clearPatronus = useCallback(() => setPatronus(null), []);
 
   useEffect(() => {
     aliveRef.current = true;
@@ -173,7 +209,7 @@ export default function AboutHero() {
           <div className={styles.bioInner} ref={bioInnerRef}>
             {BIO_PARAGRAPHS.map((paragraph, index) => (
               <p key={index} className={styles.bioParagraph}>
-                {paragraph}
+                {renderBioParagraph(paragraph)}
               </p>
             ))}
           </div>
@@ -198,18 +234,33 @@ export default function AboutHero() {
             Joane Camille
           </Link>
       
-          <Image
-            src="/images/kami.png"
-            alt=""
-            width={34}
-            height={56}
-            className={styles.mark}
-          />
+          <button
+            type="button"
+            className={styles.markTrigger}
+            onClick={castPatronus}
+            aria-label="Cast your patronus"
+          >
+            <span className={styles.castHint} aria-hidden="true">
+              CAST YOUR PATRONUS
+            </span>
+            <Image
+              src="/images/kami.png"
+              alt=""
+              width={34}
+              height={56}
+              className={styles.mark}
+            />
+          </button>
         </h1>
         <p className={styles.description}>
           WHERE CODE MEETS CREATIVITY
           <br />
           BASED IN DUBAI, WORKING WORLDWIDE
+        </p>
+
+        {patronus && <Patronus key={patronus.key} cast={patronus} onDone={clearPatronus} />}
+        <p className="visuallyHidden" aria-live="polite">
+          {announcement}
         </p>
       </section>
 
@@ -224,7 +275,7 @@ export default function AboutHero() {
       <div className={styles.bioMobile}>
         {BIO_PARAGRAPHS.map((paragraph, index) => (
           <p key={index} className={styles.bioParagraph}>
-            {paragraph}
+            {renderBioParagraph(paragraph)}
           </p>
         ))}
       </div>

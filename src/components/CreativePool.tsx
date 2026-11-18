@@ -128,8 +128,9 @@ export default function CreativePool() {
               className={styles.submit}
               disabled={status === "submitting" || !canSubmit}
             >
-              <span>{status === "submitting" ? "Joining" : "Join the pool"}</span>
-    
+              <span className={styles.submitLabel}>
+                {status === "submitting" ? "Joining" : "Join the pool"}
+              </span>
             </button>
           </form>
         )}

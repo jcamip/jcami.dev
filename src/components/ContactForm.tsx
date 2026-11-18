@@ -7,6 +7,7 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  const [isComplete, setIsComplete] = useState(false);
   const projectDetailsRef = useRef<HTMLTextAreaElement>(null);
 
   // Project details starts at the same one-line height as the fields above
@@ -65,7 +66,12 @@ export default function ContactForm() {
   }
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+    <form
+      className={styles.form}
+      onSubmit={handleSubmit}
+      onInput={(event) => setIsComplete(event.currentTarget.checkValidity())}
+      noValidate
+    >
       <div className={styles.row}>
         <div className={styles.field}>
           <label className="visuallyHidden" htmlFor="fullName">Full name*</label>
@@ -113,10 +119,34 @@ export default function ContactForm() {
         />
       </div>
 
-      <button type="submit" className={styles.submit} disabled={status === "submitting"}>
+      <button type="submit" className={styles.submit} disabled={!isComplete || status === "submitting"}>
         <span>{status === "submitting" ? "Sending" : "Submit"}</span>
-
       </button>
+
+      <div className={styles.note}>
+        <svg
+          className={styles.noteIcon}
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <div>
+          <p className={styles.noteTitle}>Professional engagements</p>
+          <p className={styles.noteText}>
+            Software development projects are contracted and invoiced through PALCANA, a UAE-registered business,
+            providing a clear framework for agreements, payments, and ongoing collaboration with clients worldwide.
+          </p>
+        </div>
+      </div>
 
       {status === "error" ? (
         <p className={styles.error} role="alert">

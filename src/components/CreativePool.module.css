@@ -88,7 +88,19 @@
   font-size: var(--text-small);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-secondary);
+  color: var(--color-brand);
+}
+
+/* Scaled on the label rather than the button itself, so it doesn't
+   fight the button's own scroll-entrance transform below. */
+.submitLabel {
+  transform: scale(1.25);
+  transform-origin: left center;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.submit:disabled .submitLabel {
+  transform: none;
 }
 
 /* Scroll-triggered entrance (see the IntersectionObserver in

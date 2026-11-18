@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import AboutHero from "@/components/AboutHero";
+import JsonLd from "@/components/JsonLd";
 import PageCta from "@/components/PageCta";
 import SectionHeading from "@/components/SectionHeading";
+import { getPublicRoute } from "@/config/site";
+import { createPageMetadata, profilePageJsonLd } from "@/lib/seo";
 import styles from "./about.module.css";
 
-export const metadata: Metadata = {
-  title: "About — Joane Camille",
-  description:
-    "Learn about Joane Camille's approach to strategy, design, and building digital products that perform.",
-};
+const route = getPublicRoute("/about");
+
+export const metadata: Metadata = createPageMetadata(route);
 
 const VALUES = [
   {
@@ -35,6 +36,7 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={profilePageJsonLd(route.description)} />
       <AboutHero />
 
       {/* first section */}

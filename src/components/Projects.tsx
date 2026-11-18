@@ -21,8 +21,14 @@ import styles from "./Projects.module.css";
 export default function Projects() {
   return (
     <section id="projects" className={styles.projects} aria-label="Selected projects">
+      <h2 className="visuallyHidden">Selected projects</h2>
       {PROJECTS.map((project) => (
-        <article key={project.slug} className={styles.project} aria-label={project.title}>
+        <article
+          key={project.slug}
+          id={`project-${project.slug}`}
+          className={styles.project}
+          aria-label={project.title}
+        >
           <ProjectMedia title={project.title} images={project.images} />
           <ProjectDetails
             title={project.title}

@@ -95,12 +95,16 @@
   font-size: var(--text-small);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-secondary);
+  color: var(--color-brand);
+  transform: scale(1.25);
+  transform-origin: left center;
+  transition: transform 0.2s var(--ease-out);
 }
 
 .submit:disabled {
   color: var(--color-neutral-500);
   cursor: not-allowed;
+  transform: none;
 }
 
 .arrow {
@@ -114,6 +118,31 @@
 
 .submit:hover:not(:disabled) {
   color: var(--color-primary);
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  line-height: var(--leading-snug);
+}
+
+.noteIcon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--color-neutral-500);
+}
+
+.noteTitle {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-neutral-700);
+}
+
+.noteText {
+  font-size: var(--text-caption);
+  color: var(--color-neutral-500);
 }
 
 .error {

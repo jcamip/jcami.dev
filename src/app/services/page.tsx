@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import BackToTopButton from "@/components/BackToTopButton";
 import PageCta from "@/components/PageCta";
 import SkillsShowcase from "@/components/SkillsShowcase";
+import { getPublicRoute } from "@/config/site";
+import { createPageMetadata } from "@/lib/seo";
 
+import BusinessNote from "./BusinessNote";
 import styles from "./services.module.css";
 import ServicesOffer from "./ServicesOffer";
 
-export const metadata: Metadata = {
-  title: "Services — Joane Camille",
-  description:
-    "Brand strategy, product design, web development, and growth consulting services offered by Joane Camille.",
-};
+export const metadata: Metadata = createPageMetadata(getPublicRoute("/services"));
 
 
 
@@ -50,15 +49,15 @@ const SKILL_GROUPS = [
 const SKILL_IMAGES: { src: string; alt: string }[] = [
   {
     src: "/images/service-skill1.png",
-    alt: "Ecom",
+    alt: "",
   },
   {
     src: "/images/service-s2.png",
-    alt: "Mobile",
+    alt: "",
   },
   {
     src: "/images/service-skill3.png",
-    alt: "Typography",
+    alt: "",
   },
 ];
 
@@ -132,6 +131,8 @@ export default function ServicesPage() {
 
       {/* second section: */}
       <ServicesOffer />
+
+      <BusinessNote />
 
       {/* third section: */}
       <SkillsShowcase

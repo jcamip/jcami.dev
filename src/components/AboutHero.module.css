@@ -265,14 +265,55 @@
 }
 
 
-.mark {
+.markTrigger {
   position: absolute;
   top: 50%;
   left: 50%;
+  z-index: 4;
   transform: translate(-50%, -50%);
+  padding: var(--space-2);
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.markTrigger:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.mark {
+  display: block;
   width: 34px;
   height: auto;
-  display: block;
+}
+
+.castHint {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  font-family: var(--font-display);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  color: var(--color-brand);
+  opacity: 0;
+  transform: translate(-50%, var(--space-1));
+  transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+  pointer-events: none;
+}
+
+.markTrigger:focus-visible .castHint {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (hover: hover) {
+  .markTrigger:hover .castHint {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 
 .description {
@@ -301,6 +342,10 @@
   .hero[data-phase="revealed"] .mark,
   .hero[data-phase="revealed"] .description {
     clip-path: inset(0 0 0 0);
+  }
+
+  .hero:not([data-phase="revealed"]) .markTrigger {
+    pointer-events: none;
   }
 }
 
@@ -375,6 +420,22 @@
 
 .bioParagraph:last-child {
   margin-bottom: 0;
+}
+
+.bioLink {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.2s var(--ease-out);
+}
+
+.bioLink:hover {
+  opacity: 0.6;
+}
+
+.bioLink:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 

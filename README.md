@@ -38,6 +38,33 @@ Email sending is configured in the Resend dashboard, not in this repo:
 
 Without a verified domain, Resend will only deliver from its shared `onboarding@resend.dev` address to the account's own email — useful for testing before DNS propagates.
 
+## SEO and search verification
+
+The site's canonical origin, metadata, structured data, sitemap, `robots.txt`,
+and supplemental `llms.txt` are generated from
+[`src/config/site.ts`](src/config/site.ts). Set these variables in the
+production hosting environment:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://jcami.dev
+GOOGLE_SITE_VERIFICATION=
+BING_SITE_VERIFICATION=
+```
+
+`NEXT_PUBLIC_SITE_URL` must be the public HTTPS origin without a path. The
+production-safe fallback is `https://jcami.dev`; localhost values are rejected
+during production builds. Google and Bing verification values are optional and
+are emitted only when configured.
+
+After deployment, verify `/robots.txt`, `/sitemap.xml`, and `/llms.txt`, then
+submit `https://jcami.dev/sitemap.xml` in Google Search Console and Bing
+Webmaster Tools. If a CDN or WAF is enabled, ensure it does not challenge or
+block Googlebot, Bingbot, OAI-SearchBot, or PerplexityBot on public routes.
+
+`llms.txt` is an experimental navigation aid. It supplements, but does not
+replace, normal HTML crawlability, metadata, structured data, and the sitemap;
+it does not guarantee ranking or citation by any search or answer engine.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

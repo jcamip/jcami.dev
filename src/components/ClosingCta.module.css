@@ -64,6 +64,23 @@
   transform: translateX(4px);
 }
 
+/* Trust line under the CTA — compound selector so it outranks the
+   larger `.content p` lead-paragraph styling above. */
+.content .note {
+  max-width: none;
+  margin-block-start: var(--space-1);
+  font-size: var(--text-xsmall);
+  color: var(--color-neutral-500);
+}
+
+/* Inline (not a flex sibling) so it stays glued to "UAE-registered"
+   when the line wraps, instead of centering beside the whole block. */
+.noteIcon {
+  display: inline-block;
+  margin-inline-end: var(--space-1);
+  vertical-align: -0.125em;
+}
+
 /* Bottom bar — location / email / copyright. Plays the same role
    Footer.module.css's .bottom plays on interior pages, which never renders
    on the home page at all (see the pathname check in Footer.tsx). Grid
@@ -71,6 +88,7 @@
    middle stays truly centered on the section regardless of how much
    shorter or longer the location/copyright text on either side is. */
 .meta {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -79,6 +97,15 @@
   border-top: 1px solid var(--color-neutral-200);
   color: var(--color-neutral-500);
   font-size: var(--text-caption);
+}
+
+/* Sits just above the divider (the .meta border-top). Below xl the
+   divider runs edge to edge, so the button is inset by .container's
+   padding; from xl up it sits flush with the divider's end. */
+.whatsapp {
+  position: absolute;
+  right: var(--space-6);
+  bottom: calc(100% + var(--space-4));
 }
 
 .location {
@@ -118,5 +145,17 @@
   .email,
   .copyright {
     justify-self: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .whatsapp {
+    right: var(--space-8);
+  }
+}
+
+@media (min-width: 1280px) {
+  .whatsapp {
+    right: 0;
   }
 }
