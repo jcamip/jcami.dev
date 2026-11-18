@@ -1,0 +1,119 @@
+.businessNote {
+  padding-block: var(--space-12);
+  background: var(--color-neutral-100);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-4);
+  max-width: 36rem;
+}
+
+.intro::before {
+  content: "";
+  width: var(--space-12);
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--color-brand);
+}
+
+.title {
+  font-size: var(--text-h3);
+  line-height: var(--leading-snug);
+  color: var(--color-neutral-900);
+}
+
+.text {
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+  color: var(--color-neutral-700);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-neutral-0);
+  box-shadow: var(--shadow-sm);
+}
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.fact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.factIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-10);
+  height: var(--space-10);
+  border-radius: var(--radius-md);
+  background: rgba(160, 0, 0, 0.08);
+  color: var(--color-brand);
+}
+
+.factTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+}
+
+.factDetail {
+  font-size: var(--text-small);
+  color: var(--color-neutral-500);
+}
+
+.footer {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-neutral-200);
+  font-size: var(--text-small);
+  color: var(--color-neutral-500);
+}
+
+.link {
+  color: var(--color-brand);
+  font-weight: 600;
+  border-bottom: 1px dotted currentColor;
+}
+
+.link:hover,
+.link:focus-visible {
+  border-bottom-style: solid;
+}
+
+@media (min-width: 1024px) {
+  .businessNote {
+    padding-block: var(--space-16);
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  .details {
+    padding: var(--space-8);
+  }
+}
