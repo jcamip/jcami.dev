@@ -167,3 +167,12 @@
 .success p {
   color: var(--color-neutral-500);
 }
+
+/* Mobile: the hand image sits behind the form at full height, so typed
+   text needs the extra weight to stay readable over it. */
+@media (max-width: 767px) {
+  .field input,
+  .field textarea {
+    font-weight: 700;
+  }
+}

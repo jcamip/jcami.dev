@@ -7,6 +7,7 @@ import { createPageMetadata } from "@/lib/seo";
 
 import BusinessNote from "./BusinessNote";
 import styles from "./services.module.css";
+import ServicesHeroVideo from "./ServicesHeroVideo";
 import ServicesOffer from "./ServicesOffer";
 
 export const metadata: Metadata = createPageMetadata(getPublicRoute("/services"));
@@ -81,15 +82,7 @@ export default function ServicesPage() {
 
       {/* first section: */}
       <section className={styles.hero}>
-        <video
-          className={styles.heroVideo}
-          src="/videos/sser.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-hidden="true"
-        />
+        <ServicesHeroVideo />
         <div className={styles.heroOverlay} aria-hidden="true" />
         <div className={`container ${styles.heroInner}`}>
           <span className="eyebrow">Services</span>

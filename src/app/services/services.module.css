@@ -28,14 +28,19 @@
 }
 
 
+/* Fills the hero by default (mobile, where the menu collapses into the
+   toggle). On desktop ServicesHeroVideo sizes and offsets it so the menu sits
+   on the footage's white background. max-width: none overrides the global
+   media reset (max-width: 100%) so the frame can extend past the hero. */
 .heroVideo {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  z-index: 0;
   width: 100%;
+  max-width: none;
   height: 100%;
   object-fit: cover;
-  transform: translateX(-4%);
-  z-index: 0;
 }
 
 .heroOverlay {
@@ -127,19 +132,10 @@
   opacity: 0.7;
 }
 
-/* Mobile: the video's -4% nudge and heroInner's +96px rightward nudge are
-   both tuned for the desktop crop/composition — on narrow viewports they
-   push the video's subject out of frame and shove the heading/subtitle far
-   enough right that the text runs off the edge of the screen instead of
-   wrapping (see the cut-off "supp[ort]"/"strategy t[o]" in the mobile
-   screenshot). Dropping both transforms and letting heroInner fill the
-   container's own left-aligned width keeps the full heading/subtitle
-   on-screen, matching the scroll button re-centered below it. */
+/* Mobile: heroInner's +96px rightward nudge is tuned for the desktop
+   composition and pushes the heading/subtitle off-screen on narrow
+   viewports, so drop it and let heroInner fill the container's width. */
 @media (max-width: 767px) {
-  .heroVideo {
-    transform: none;
-  }
-
   .heroInner {
     max-width: 100%;
     margin-top: var(--space-24);
