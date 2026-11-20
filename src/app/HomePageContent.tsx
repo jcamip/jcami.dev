@@ -90,13 +90,13 @@ export default function HomePageContent() {
               </svg>
             </Button>
           </div>
-          <div className={styles.heroPartners}>
+          {/* <div className={styles.heroPartners}>
             <PartnersCarousel />
-          </div>
+          </div> */}
         </div>
       </section>
 
-      <Projects />
+      {/* <Projects /> */}
       <BackToTopButton />
     </>
   );
